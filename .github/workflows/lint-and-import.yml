@@ -1,0 +1,38 @@
+# .github/workflows/lint-and-import.yml
+# Runs on every push and PR. Catches syntax errors, import errors,
+# and basic style issues before they reach main.
+
+name: Lint & Import Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install minimal deps for syntax check
+        run: |
+          pip install --upgrade pip
+          pip install pyflakes
+
+      - name: Syntax check all Python files
+        run: |
+          python -m compileall -q pipeline/ rag/ app/
+
+      - name: Unused imports & undefined names
+        run: |
+          pyflakes pipeline/ rag/ app/ || true
+          # `|| true` because pyflakes is advisory here, not blocking.
+          # Remove `|| true` if you want strict enforcement.

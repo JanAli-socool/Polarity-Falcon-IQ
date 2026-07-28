@@ -1,0 +1,62 @@
+# .github/workflows/rag-smoke-test.yml
+# Smoke-tests that the Chroma index loads and returns a hit for a
+# known-good query. Catches the class of bug where someone breaks
+# the retriever import chain or corrupts the vector store.
+
+name: RAG Smoke Test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "rag/**"
+      - "data/final/**"
+      - "requirements.txt"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install RAG deps (CPU torch)
+        run: |
+          pip install --upgrade pip
+          pip install "numpy<2" torch==2.2.2 \
+            --extra-index-url https://download.pytorch.org/whl/cpu
+          pip install "transformers<4.45" "sentence-transformers<3.1" \
+            chromadb pandas
+
+      - name: Retriever smoke test (no LLM call)
+        run: |
+          python - <<'EOF'
+          from rag.retriever import retrieve
+
+          # Known-good query: Chuck Carroll is in the dataset as CIO of TFO.
+          r = retrieve("chief investment officer", k=10)
+          assert r["status"] == "ok", f"expected ok, got {r['status']}"
+          top_person = r["hits"][0]["metadata"]["person"]
+          assert top_person == "Chuck Carroll", \
+              f"expected Chuck Carroll first, got {top_person}"
+          print(f"PASS: top hit for CIO query is {top_person}")
+
+          # Known-good refusal: Tokyo is not in the dataset.
+          r = retrieve("family offices in Tokyo", k=10)
+          assert r["status"] == "refuse_no_match", \
+              f"expected refuse_no_match, got {r['status']}"
+          print(f"PASS: Tokyo query correctly refused")
+
+          # Known-good field refusal.
+          r = retrieve("what is Chuck Carroll's email", k=10)
+          assert r["status"] == "refuse_field_missing", \
+              f"expected refuse_field_missing, got {r['status']}"
+          print(f"PASS: email query correctly refused (field missing)")
+
+          print("\nAll RAG smoke tests passed.")
+          EOF
