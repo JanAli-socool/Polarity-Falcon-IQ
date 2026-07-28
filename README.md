@@ -1,5 +1,9 @@
 # Family Office Contacts — Micro-RAG
 
+![Lint](https://github.com/JanAli-socool/falcon-fo/actions/workflows/lint-and-import.yml/badge.svg)
+![Dataset Integrity](https://github.com/JanAli-socool/falcon-fo/actions/workflows/dataset-integrity.yml/badge.svg)
+![RAG Smoke](https://github.com/JanAli-socool/falcon-fo/actions/workflows/rag-smoke-test.yml/badge.svg)
+
 Assessment build for Falcon Scaling / PolarityIQ.
 
 ## What this is
