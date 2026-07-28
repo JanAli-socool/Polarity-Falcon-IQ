@@ -2,5 +2,4 @@
 .env
 __pycache__/
 *.pyc
-data/raw/
-data/audit/falcon-fo.bundle
+falcon-fo.bundle
