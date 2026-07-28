@@ -126,6 +126,8 @@ Naive intent detection identifies when a user asks for a specific field (`"email
 **Layer 3 — Post-generation claim check.**
 After the LLM answers, we regex-extract any emails from the response and confirm each one appears in the retrieved evidence. If the LLM hallucinates an email, it's caught and the UI flags the response as unverified.
 
+A stress test of 17 adversarial / off-topic / malformed / in-domain queries is available via `pipeline/99_stress_test.py`. All 14 out-of-scope prompts (empty input, prompt-injection attempts, SQL/XSS payloads, off-topic questions, and in-domain-but-not-in-data queries) refused correctly with distances 0.54–0.93. The 3 legitimate queries (`chief investment officer`, `Chuck Carroll`, `who works at WE Family Offices`) returned grounded matches at 0.40–0.46.
+
 ### Why this satisfies the brief
 
 The brief says: *"Prompt instructions alone are not enough. Telling the model to use only the provided data does not prove that it will obey."* Our control does not rely on the LLM's obedience — Layers 1 and 2 refuse **before** the LLM sees anything, and Layer 3 catches misbehavior **after**. The LLM is bounded on both sides by code.
