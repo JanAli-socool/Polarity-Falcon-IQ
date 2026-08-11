@@ -1,0 +1,99 @@
+{
+  "customer_explanation": "The system planned retrieval steps, ran them against only release-authorized records, and checked every cited record before display.",
+  "goal": "Identify the family offices in the dataset that are the best fit for a lower-middle-market healthcare services fund seeking limited partners, and tell me how confident you are in each.",
+  "limitations": [
+    "Model planning was unavailable; deterministic decomposition was used instead."
+  ],
+  "model_metadata": {},
+  "plan": {
+    "decision": "execute",
+    "reason": "The fixed Goal-2 comparator matches this request.",
+    "tool_calls": [
+      {
+        "arguments": {
+          "limit": 20
+        },
+        "tool": "compare_lmm_healthcare_lp_fit"
+      },
+      {
+        "arguments": {
+          "aggregate": "firms",
+          "filters": {
+            "has_email": true
+          },
+          "limit": 100,
+          "offset": 0,
+          "terms": [
+            "healthcare"
+          ]
+        },
+        "tool": "search_records"
+      }
+    ]
+  },
+  "planner_mode": "deterministic_fallback",
+  "render_authority": {
+    "authorized_record_ids": [],
+    "decision": "abstain",
+    "goal": "Identify the family offices in the dataset that are the best fit for a lower-middle-market healthcare services fund seeking limited partners, and tell me how confident you are in each.",
+    "passed": true,
+    "reason": "The comparison found no supported candidate, so the commercial recommendation was withheld."
+  },
+  "status": "abstained",
+  "tool_results": [
+    {
+      "arguments": {
+        "limit": 20
+      },
+      "result": {
+        "authorized_corpus_count": 0,
+        "candidate_firm_count": 0,
+        "goal": "Identify the family offices in the dataset that are the best fit for a lower-middle-market healthcare services fund seeking limited partners, and tell me how confident you are in each.",
+        "limitations": [
+          "The production release contains no supported healthcare fit candidate."
+        ],
+        "method": "Deterministic four-signal evidence comparison; no missing mandate is inferred.",
+        "results": []
+      },
+      "tool": "compare_lmm_healthcare_lp_fit"
+    },
+    {
+      "arguments": {
+        "aggregate": "firms",
+        "filters": {
+          "has_email": true
+        },
+        "limit": 100,
+        "offset": 0,
+        "terms": [
+          "healthcare"
+        ]
+      },
+      "result": {
+        "aggregate": 0,
+        "authorized_corpus_count": 0,
+        "limitations": [
+          "No production record satisfies every requested hard filter."
+        ],
+        "matched_firm_count": 0,
+        "matched_record_count": 0,
+        "query": {
+          "aggregate": "firms",
+          "filters": {
+            "has_email": true
+          },
+          "limit": 100,
+          "offset": 0,
+          "terms": [
+            "healthcare"
+          ]
+        },
+        "records": [],
+        "returned_record_count": 0,
+        "status": "no_supported_match"
+      },
+      "tool": "search_records"
+    }
+  ],
+  "trace_id": "TRACE_E296BF932E5847E9"
+}

@@ -1,0 +1,35 @@
+{
+  "executed_at": "2026-08-11T13:16:52Z",
+  "goals": [
+    {
+      "directory": "data/stage2/goal_outputs/RUN_20260811T131652Z/goal_1",
+      "exact_goal": "Build an evidence-backed US healthcare family-office outreach shortlist: find decision-makers with a person-owned professional email, count matching firms, and report the source and contact-route mix.",
+      "goal_key": "goal_1",
+      "planner_mode": "deterministic_fallback",
+      "status": "ok",
+      "trace_id": "TRACE_0BECE6CC739C4538"
+    },
+    {
+      "directory": "data/stage2/goal_outputs/RUN_20260811T131652Z/goal_2",
+      "exact_goal": "Identify the family offices in the dataset that are the best fit for a lower-middle-market healthcare services fund seeking limited partners, and tell me how confident you are in each.",
+      "goal_key": "goal_2",
+      "planner_mode": "deterministic_fallback",
+      "status": "abstained",
+      "trace_id": "TRACE_E296BF932E5847E9"
+    },
+    {
+      "directory": "data/stage2/goal_outputs/RUN_20260811T131652Z/goal_3",
+      "exact_goal": "For the Falcon Scaling partnerships lead preparing a healthcare fund outreach sprint, find current US family-office decision-makers with a person-owned professional email, count the firms, and show the source and contact-route mix so the team can prioritize outreach without re-validating routes.",
+      "goal_key": "goal_3",
+      "planner_mode": "deterministic_fallback",
+      "status": "ok",
+      "trace_id": "TRACE_F912C04C7C5743F3"
+    }
+  ],
+  "qualifying_email_count": 0,
+  "record_count": 0,
+  "release_id": "REL_4FC7D7694DEEDC6E",
+  "release_ready": false,
+  "requested_planner_mode": "model_with_logged_fallback",
+  "run_id": "RUN_20260811T131652Z"
+}
