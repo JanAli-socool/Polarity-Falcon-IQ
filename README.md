@@ -64,6 +64,7 @@ The intended 12-hour scheduled job is preserved at `docs/stage2/workflow_templat
 
 ## Documentation
 
+- [Checkpoint deliverable index](docs/stage2/05_DELIVERABLE_INDEX.md)
 - [Architecture and operations](docs/stage2/02_ARCHITECTURE_AND_OPERATIONS.md)
 - [Requirements and acceptance map](docs/stage2/00_REQUIREMENTS_AND_ACCEPTANCE.md)
 - [Engineering decisions](docs/stage2/01_ENGINEERING_DECISIONS.md)
