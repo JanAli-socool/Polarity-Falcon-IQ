@@ -1,0 +1,39 @@
+name: Python Syntax and Import Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install runtime and lint dependencies
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m pip install pyflakes
+
+      - name: Compile all maintained Python packages
+        run: python -m compileall -q pipeline rag app stage2 tests
+
+      - name: Reject undefined names in Stage 2 control flow
+        run: pyflakes stage2 tests/stage2
+
+      - name: Import production entry points
+        run: |
+          python - <<'PY'
+          import stage2.discovery
+          import stage2.enrichment
+          import stage2.pipeline
+          import stage2.release
+          print("Stage 2 imports passed")
+          PY

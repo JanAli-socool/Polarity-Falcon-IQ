@@ -1,0 +1,51 @@
+name: Canonical Dataset Integrity
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/final/**"
+      - "data/stage2/state/records.jsonl"
+      - "stage2/**"
+      - ".github/workflows/dataset-integrity.yml"
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install test dependencies
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Run policy and canonical-release tests
+        run: python -m pytest -q tests/stage2
+
+      - name: Reconcile canonical JSONL, customer JSONL, CSV, and manifest
+        run: python -m stage2.release --reconcile-only
+
+      - name: Report final-gate status without padding an incomplete release
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          manifest = json.loads(Path("data/final/release_manifest.json").read_text())
+          print(json.dumps({
+              "record_count": manifest["record_count"],
+              "qualifying_email_count": manifest["qualifying_email_count"],
+              "source_mix": manifest["source_mix"],
+              "release_ready": manifest["release_ready"],
+              "readiness_failures": manifest["readiness_failures"],
+          }, indent=2, sort_keys=True))
+          # `python -m stage2.release --final` is the intentionally strict final
+          # gate. Normal build checks remain green while truthful replenishment
+          # is still below the required floor.
+          PY
