@@ -1,8 +1,4 @@
-# .github/workflows/lint-and-import.yml
-# Runs on every push and PR. Catches syntax errors, import errors,
-# and basic style issues before they reach main.
-
-name: Lint & Import Check
+name: Python Syntax and Import Check
 
 on:
   push:
@@ -16,23 +12,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
 
-      - name: Install minimal deps for syntax check
+      - name: Install runtime and lint dependencies
         run: |
-          pip install --upgrade pip
-          pip install pyflakes
+          python -m pip install -r requirements-dev.txt
+          python -m pip install pyflakes
 
-      - name: Syntax check all Python files
-        run: |
-          python -m compileall -q pipeline/ rag/ app/
+      - name: Compile all maintained Python packages
+        run: python -m compileall -q pipeline rag app stage2 tests
 
-      - name: Unused imports & undefined names
+      - name: Reject undefined names in Stage 2 control flow
+        run: pyflakes stage2 tests/stage2
+
+      - name: Import production entry points
         run: |
-          pyflakes pipeline/ rag/ app/ || true
-          # `|| true` because pyflakes is advisory here, not blocking.
-          # Remove `|| true` if you want strict enforcement.
+          python - <<'PY'
+          import stage2.discovery
+          import stage2.enrichment
+          import stage2.pipeline
+          import stage2.release
+          print("Stage 2 imports passed")
+          PY
