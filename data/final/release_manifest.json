@@ -1,25 +1,29 @@
 {
-  "canonical_source": "/home/user/falcon-fo/data/stage2/state/records.jsonl",
-  "created_at": "2026-08-11T12:49:26Z",
-  "firm_count": 0,
-  "qualifying_email_count": 0,
+  "canonical_source": "/home/runner/work/falcon-fo/falcon-fo/data/stage2/state/records.jsonl",
+  "created_at": "2026-08-11T19:57:05Z",
+  "firm_count": 30,
+  "qualifying_email_count": 48,
   "readiness_failures": [
-    "records 0 < 500",
-    "qualifying_emails 0 < 200"
+    "records 124 < 500",
+    "qualifying_emails 48 < 200"
   ],
-  "record_count": 0,
-  "release_id": "REL_4FC7D7694DEEDC6E",
+  "record_count": 124,
+  "release_id": "REL_9DF4B1ED3959AC8F",
   "release_ready": false,
   "representations": {
     "csv": {
-      "path": "/home/user/falcon-fo/data/final/family_office_contacts.csv",
-      "sha256": "5fbdd0629c8288bc34d8b5bb61115554e43d75945d8b357c409aa6698e91f0e5"
+      "path": "/home/runner/work/falcon-fo/falcon-fo/data/final/family_office_contacts.csv",
+      "sha256": "6806b552b5b7c2e19749fa44854e0dc63eb29516fc5cf785ef0637631b89bc03"
     },
     "jsonl": {
-      "path": "/home/user/falcon-fo/data/final/family_office_contacts.jsonl",
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      "path": "/home/runner/work/falcon-fo/falcon-fo/data/final/family_office_contacts.jsonl",
+      "sha256": "e4ddb6bc49cb8d8fe6de619d9f488284b429fc1a43bc965f7f679f769c98ec35"
     }
   },
   "schema_version": "2.0",
-  "source_mix": {}
+  "source_mix": {
+    "news_or_press": 55,
+    "other_public_source": 22,
+    "search_discovery": 47
+  }
 }
