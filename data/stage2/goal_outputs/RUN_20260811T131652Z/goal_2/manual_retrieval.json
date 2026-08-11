@@ -1,0 +1,15 @@
+{
+  "method": "Fixed four-signal evidence comparator over the authorized release.",
+  "outputs": [
+    {
+      "authorized_corpus_count": 0,
+      "candidate_firm_count": 0,
+      "goal": "Identify the family offices in the dataset that are the best fit for a lower-middle-market healthcare services fund seeking limited partners, and tell me how confident you are in each.",
+      "limitations": [
+        "The production release contains no supported healthcare fit candidate."
+      ],
+      "method": "Deterministic four-signal evidence comparison; no missing mandate is inferred.",
+      "results": []
+    }
+  ]
+}

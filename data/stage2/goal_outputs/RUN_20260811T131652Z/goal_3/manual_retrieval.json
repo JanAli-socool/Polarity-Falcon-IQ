@@ -1,0 +1,105 @@
+{
+  "method": "Four deterministic queries over one authorized denominator: shortlist, firm count, source mix, and route mix.",
+  "outputs": [
+    {
+      "aggregate": 0,
+      "authorized_corpus_count": 0,
+      "limitations": [
+        "No production record satisfies every requested hard filter."
+      ],
+      "matched_firm_count": 0,
+      "matched_record_count": 0,
+      "query": {
+        "aggregate": "records",
+        "filters": {
+          "country": "united states",
+          "has_email": true,
+          "trust_state": "supported_current"
+        },
+        "limit": 100,
+        "offset": 0,
+        "terms": [
+          "healthcare"
+        ]
+      },
+      "records": [],
+      "returned_record_count": 0,
+      "status": "no_supported_match"
+    },
+    {
+      "aggregate": 0,
+      "authorized_corpus_count": 0,
+      "limitations": [
+        "No production record satisfies every requested hard filter."
+      ],
+      "matched_firm_count": 0,
+      "matched_record_count": 0,
+      "query": {
+        "aggregate": "firms",
+        "filters": {
+          "country": "united states",
+          "has_email": true,
+          "trust_state": "supported_current"
+        },
+        "limit": 1,
+        "offset": 0,
+        "terms": [
+          "healthcare"
+        ]
+      },
+      "records": [],
+      "returned_record_count": 0,
+      "status": "no_supported_match"
+    },
+    {
+      "aggregate": {},
+      "authorized_corpus_count": 0,
+      "limitations": [
+        "No production record satisfies every requested hard filter."
+      ],
+      "matched_firm_count": 0,
+      "matched_record_count": 0,
+      "query": {
+        "aggregate": "source_mix",
+        "filters": {
+          "country": "united states",
+          "has_email": true,
+          "trust_state": "supported_current"
+        },
+        "limit": 1,
+        "offset": 0,
+        "terms": [
+          "healthcare"
+        ]
+      },
+      "records": [],
+      "returned_record_count": 0,
+      "status": "no_supported_match"
+    },
+    {
+      "aggregate": {},
+      "authorized_corpus_count": 0,
+      "limitations": [
+        "No production record satisfies every requested hard filter."
+      ],
+      "matched_firm_count": 0,
+      "matched_record_count": 0,
+      "query": {
+        "aggregate": "route_mix",
+        "filters": {
+          "country": "united states",
+          "has_email": true,
+          "trust_state": "supported_current"
+        },
+        "limit": 1,
+        "offset": 0,
+        "terms": [
+          "healthcare"
+        ]
+      },
+      "records": [],
+      "returned_record_count": 0,
+      "status": "no_supported_match"
+    }
+  ]
+}

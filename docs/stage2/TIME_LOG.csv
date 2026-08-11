@@ -1,0 +1,4 @@
+event_id,event_type,started_at_pkt,ended_at_pkt,duration_minutes,evidence,notes
+T001,official_window,2026-08-10T17:30:00+05:00,,,user recollection,"Approximate only; replace with exact receipt timestamp before submission"
+T002,human_active_attention,,,,,Jan must enter measured sessions; do not infer from commits or agent logs
+T003,unattended_runtime,,,,,Populate from scheduler run timestamps and machine logs

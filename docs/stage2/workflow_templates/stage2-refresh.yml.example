@@ -1,0 +1,123 @@
+name: Stage 2 Unattended Refresh
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "stage2/**"
+      - "requirements*.txt"
+      - ".github/workflows/stage2-refresh.yml"
+  schedule:
+    # Four genuinely separate opportunities per 48-hour interval.
+    - cron: "17 */12 * * *"
+  workflow_dispatch:
+    inputs:
+      max_candidates:
+        description: "Maximum firm candidates to enrich this cycle"
+        required: false
+        default: "120"
+      search_results_per_query:
+        description: "Discovery results requested per query"
+        required: false
+        default: "35"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: stage2-refresh-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  STAGE2_TRIGGER: ${{ github.event_name }}
+  STAGE2_CYCLE_ID: ${{ github.run_id }}
+  STAGE2_MAX_CANDIDATES: ${{ inputs.max_candidates || '120' }}
+  STAGE2_SEARCH_RESULTS_PER_QUERY: ${{ inputs.search_results_per_query || '35' }}
+  STAGE2_TRUST_REFRESH_BATCH: "75"
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    steps:
+      - name: Check out scheduler branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install free-tier pipeline dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements-dev.txt
+
+      - name: Run policy and replay tests before mutation
+        run: python -m pytest -q tests/stage2
+
+      - name: Preserve and quarantine Stage 1 inputs once
+        run: |
+          if [ ! -f data/stage2/quarantine/stage1_records.jsonl ]; then
+            python -m stage2.import_stage1
+          fi
+
+      - name: Run discovery, enrichment, trust refresh, and replenishment
+        run: python -m stage2.pipeline
+
+      - name: Reconcile all customer representations
+        if: always()
+        run: |
+          if [ -f data/final/release_manifest.json ]; then
+            python -m stage2.release --reconcile-only
+          fi
+
+      - name: Publish uncurated cycle logs as scheduler artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage2-operating-evidence-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            data/stage2/operating_logs/
+            data/stage2/quarantine/cycle-${{ github.run_id }}-${{ github.run_attempt }}.jsonl
+            data/final/release_manifest.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Commit scheduler-owned state and raw logs
+        if: always()
+        run: |
+          git config user.name "falcon-stage2-scheduler[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/stage2 data/final
+          if git diff --cached --quiet; then
+            echo "No state change to commit."
+            exit 0
+          fi
+          git commit -m "Record unattended Stage 2 cycle $GITHUB_RUN_ID attempt $GITHUB_RUN_ATTEMPT"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
+
+      - name: Write buyer-state summary
+        if: always()
+        run: |
+          python - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+          import json
+          from pathlib import Path
+          path = Path("data/final/release_manifest.json")
+          print("## Stage 2 refresh")
+          print(f"- Scheduler run: `{__import__('os').environ.get('GITHUB_RUN_ID')}`")
+          if path.exists():
+              m = json.loads(path.read_text())
+              print(f"- Qualifying records: **{m['record_count']}**")
+              print(f"- Person-owned professional emails: **{m['qualifying_email_count']}**")
+              print(f"- Final release gate ready: **{m['release_ready']}**")
+              print(f"- Source mix: `{m['source_mix']}`")
+          else:
+              print("- No release manifest was produced; inspect the raw cycle log.")
+          PY

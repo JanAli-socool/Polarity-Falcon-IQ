@@ -1,0 +1,25 @@
+{
+  "canonical_source": "/home/user/falcon-fo/data/stage2/state/records.jsonl",
+  "created_at": "2026-08-11T12:49:26Z",
+  "firm_count": 0,
+  "qualifying_email_count": 0,
+  "readiness_failures": [
+    "records 0 < 500",
+    "qualifying_emails 0 < 200"
+  ],
+  "record_count": 0,
+  "release_id": "REL_4FC7D7694DEEDC6E",
+  "release_ready": false,
+  "representations": {
+    "csv": {
+      "path": "/home/user/falcon-fo/data/final/family_office_contacts.csv",
+      "sha256": "5fbdd0629c8288bc34d8b5bb61115554e43d75945d8b357c409aa6698e91f0e5"
+    },
+    "jsonl": {
+      "path": "/home/user/falcon-fo/data/final/family_office_contacts.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "schema_version": "2.0",
+  "source_mix": {}
+}

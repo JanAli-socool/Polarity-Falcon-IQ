@@ -1,0 +1,140 @@
+{
+  "customer_explanation": "The system planned retrieval steps, ran them against only release-authorized records, and checked every cited record before display.",
+  "goal": "For the Falcon Scaling partnerships lead preparing a healthcare fund outreach sprint, find current US family-office decision-makers with a person-owned professional email, count the firms, and show the source and contact-route mix so the team can prioritize outreach without re-validating routes.",
+  "limitations": [
+    "Model planning was unavailable; deterministic decomposition was used instead."
+  ],
+  "model_metadata": {},
+  "plan": {
+    "decision": "execute",
+    "reason": "Deterministic parser decomposed the request.",
+    "tool_calls": [
+      {
+        "arguments": {
+          "aggregate": "firms",
+          "filters": {
+            "country": "united states",
+            "has_email": true,
+            "trust_state": "supported_current"
+          },
+          "limit": 100,
+          "offset": 0,
+          "terms": [
+            "healthcare"
+          ]
+        },
+        "tool": "search_records"
+      },
+      {
+        "arguments": {
+          "aggregate": "route_mix",
+          "filters": {
+            "country": "united states",
+            "has_email": true,
+            "trust_state": "supported_current"
+          },
+          "limit": 1,
+          "offset": 0,
+          "terms": [
+            "healthcare"
+          ]
+        },
+        "tool": "search_records"
+      }
+    ]
+  },
+  "planner_mode": "deterministic_fallback",
+  "render_authority": {
+    "authorized_record_ids": [],
+    "decision": "render",
+    "goal": "For the Falcon Scaling partnerships lead preparing a healthcare fund outreach sprint, find current US family-office decision-makers with a person-owned professional email, count the firms, and show the source and contact-route mix so the team can prioritize outreach without re-validating routes.",
+    "passed": true,
+    "reason": "All rendered records and aggregates came directly from deterministic tools over the authorized release."
+  },
+  "status": "ok",
+  "tool_results": [
+    {
+      "arguments": {
+        "aggregate": "firms",
+        "filters": {
+          "country": "united states",
+          "has_email": true,
+          "trust_state": "supported_current"
+        },
+        "limit": 100,
+        "offset": 0,
+        "terms": [
+          "healthcare"
+        ]
+      },
+      "result": {
+        "aggregate": 0,
+        "authorized_corpus_count": 0,
+        "limitations": [
+          "No production record satisfies every requested hard filter."
+        ],
+        "matched_firm_count": 0,
+        "matched_record_count": 0,
+        "query": {
+          "aggregate": "firms",
+          "filters": {
+            "country": "united states",
+            "has_email": true,
+            "trust_state": "supported_current"
+          },
+          "limit": 100,
+          "offset": 0,
+          "terms": [
+            "healthcare"
+          ]
+        },
+        "records": [],
+        "returned_record_count": 0,
+        "status": "no_supported_match"
+      },
+      "tool": "search_records"
+    },
+    {
+      "arguments": {
+        "aggregate": "route_mix",
+        "filters": {
+          "country": "united states",
+          "has_email": true,
+          "trust_state": "supported_current"
+        },
+        "limit": 1,
+        "offset": 0,
+        "terms": [
+          "healthcare"
+        ]
+      },
+      "result": {
+        "aggregate": {},
+        "authorized_corpus_count": 0,
+        "limitations": [
+          "No production record satisfies every requested hard filter."
+        ],
+        "matched_firm_count": 0,
+        "matched_record_count": 0,
+        "query": {
+          "aggregate": "route_mix",
+          "filters": {
+            "country": "united states",
+            "has_email": true,
+            "trust_state": "supported_current"
+          },
+          "limit": 1,
+          "offset": 0,
+          "terms": [
+            "healthcare"
+          ]
+        },
+        "records": [],
+        "returned_record_count": 0,
+        "status": "no_supported_match"
+      },
+      "tool": "search_records"
+    }
+  ],
+  "trace_id": "TRACE_F912C04C7C5743F3"
+}
