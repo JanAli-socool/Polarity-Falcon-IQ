@@ -6,6 +6,9 @@ on:
     paths:
       - "data/final/**"
       - "data/stage2/state/records.jsonl"
+      - "app/**"
+      - "tests/stage2/**"
+      - "requirements*.txt"
       - "stage2/**"
       - ".github/workflows/dataset-integrity.yml"
   pull_request:
