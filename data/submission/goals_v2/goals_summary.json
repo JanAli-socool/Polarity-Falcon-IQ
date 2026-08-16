@@ -1,0 +1,29 @@
+{
+  "run_timestamp": "2026-08-16T01:17:04.429700+00:00",
+  "goals": {
+    "goal_1": {
+      "description": "Multi-step commercial search",
+      "agent_query": "Who are the chief investment officers at TFO Family Office Partners and Omnia Family Wealth?",
+      "manual_query": "chief investment officer TFO Omnia",
+      "agent_claim_check": false,
+      "agent_refused": true,
+      "manual_claim_check": true
+    },
+    "goal_2": {
+      "description": "Uncertain-data case (verbatim from brief)",
+      "agent_query": "Identify the family offices in the dataset that are the best fit for a lower-middle-market healthcare services fund seeking limited partners, and tell me how confident you are in each.",
+      "manual_query": "healthcare lower middle market fund limited partners",
+      "agent_claim_check": false,
+      "agent_refused": true,
+      "manual_claim_check": true
+    },
+    "goal_3": {
+      "description": "Buyer challenge - secondaries fundraise",
+      "agent_query": "Which family offices have team members with direct investment or co-investment experience, and who should I contact?",
+      "manual_query": "direct investment co-investment secondaries",
+      "agent_claim_check": true,
+      "agent_refused": false,
+      "manual_claim_check": true
+    }
+  }
+}

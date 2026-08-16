@@ -107,7 +107,7 @@ for i, cand in enumerate(candidates, 1):
         continue
     url, title = site
     ok, evidence = site_confirms_fo(url)
-    status = "✅ VERIFIED" if ok else f"❌ {evidence[:30]}"
+    status = "VERIFIED" if ok else f"FAILED: {evidence[:30]}"
     print(f"{status}  {urlparse(url).netloc}")
     if ok:
         verified.append({
@@ -121,7 +121,7 @@ for i, cand in enumerate(candidates, 1):
             "web_domains": cand.get("web_domains", []),
             "web_evidence": cand.get("web_evidence", []),
         })
-    time.sleep(1.5)  # polite pacing
+    time.sleep(0.5)  # polite pacing
 
 with OUT.open("w", encoding="utf-8") as f:
     for v in verified:

@@ -1,0 +1,29 @@
+{
+  "run_timestamp": "2026-08-14T15:40:12.864371+00:00",
+  "goals": {
+    "goal_1": {
+      "description": "Multi-step commercial search",
+      "query": "Identify family offices with healthcare investment mandates and provide the named CIO with verified contact route for each.",
+      "claim_check_passed": true,
+      "refused": false,
+      "citations_count": 0,
+      "steps_count": 4
+    },
+    "goal_2": {
+      "description": "Uncertain-data case (verbatim from brief)",
+      "query": "Identify the family offices in the dataset that are the best fit for a lower-middle-market healthcare services fund seeking limited partners, and tell me how confident you are in each.",
+      "claim_check_passed": false,
+      "refused": true,
+      "citations_count": 0,
+      "steps_count": 6
+    },
+    "goal_3": {
+      "description": "Buyer challenge - secondaries fundraise",
+      "query": "I'm raising a Fund II for a Southeast US-based secondaries specialist. Which family offices in the dataset have allocated to secondaries funds before, and who is the right person to approach?",
+      "claim_check_passed": true,
+      "refused": false,
+      "citations_count": 0,
+      "steps_count": 6
+    }
+  }
+}
