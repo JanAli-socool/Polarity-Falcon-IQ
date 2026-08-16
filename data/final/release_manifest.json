@@ -1,29 +1,29 @@
 {
   "canonical_source": "/home/runner/work/falcon-fo/falcon-fo/data/stage2/state/records.jsonl",
-  "created_at": "2026-08-16T02:13:15Z",
-  "firm_count": 83,
-  "qualifying_email_count": 118,
+  "created_at": "2026-08-16T13:15:24Z",
+  "firm_count": 86,
+  "qualifying_email_count": 115,
   "readiness_failures": [
-    "records 302 < 500",
-    "qualifying_emails 118 < 200"
+    "records 325 < 500",
+    "qualifying_emails 115 < 200"
   ],
-  "record_count": 302,
-  "release_id": "REL_EEC610ACE185A566",
+  "record_count": 325,
+  "release_id": "REL_A409B523E2315C47",
   "release_ready": false,
   "representations": {
     "csv": {
       "path": "/home/runner/work/falcon-fo/falcon-fo/data/final/family_office_contacts.csv",
-      "sha256": "2898281494c875db9e8475667e7386c4a90d0f8cb18329e07244f9aaef46033e"
+      "sha256": "34cbb1dddcb329f2db2d269033cfc405599f69791f08360d2947f78260ce4ed6"
     },
     "jsonl": {
       "path": "/home/runner/work/falcon-fo/falcon-fo/data/final/family_office_contacts.jsonl",
-      "sha256": "7f06351b669123aecb5b53efc6f4eddd8ba54bca74e97a7263d269bc5f198e85"
+      "sha256": "b85caa0f7a9c18d55840a409856e3603628723295b9f79f0d3d3472c5cd16f50"
     }
   },
   "schema_version": "2.0",
   "source_mix": {
-    "news_or_press": 67,
-    "other_public_source": 27,
-    "search_discovery": 208
+    "news_or_press": 65,
+    "other_public_source": 41,
+    "search_discovery": 219
   }
 }
