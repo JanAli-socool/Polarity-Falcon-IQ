@@ -46,7 +46,12 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
+          pip install -e .
       
+      - name: Build canonical database
+        run: |
+          python -m pipeline.build_final
+
       - name: Run discovery pipeline
         id: discovery
         run: |
@@ -187,7 +192,7 @@ if len(stale_firms) > 0 or len(stale_people) > 0:
           retention-days: 90
 
   # Separate job for staleness detection that can run more frequently
-  staleness-check:
+staleness-check:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     if: github.event_name == 'schedule'
@@ -197,17 +202,18 @@ if len(stale_firms) > 0 or len(stale_people) > 0:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+       
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
           cache: 'pip'
-      
+       
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
+          pip install -e .
       
       - name: Run staleness detection
         run: |
