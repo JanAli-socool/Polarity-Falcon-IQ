@@ -36,26 +36,26 @@ jobs:
       - name: Retriever smoke test (no LLM call)
         run: |
           python - <<'EOF'
-          from rag.retriever import retrieve
+          from rag.retriever_v2 import retrieve
 
           # Known-good query: Chuck Carroll is in the dataset as CIO of TFO.
           r = retrieve("chief investment officer", k=10)
-          assert r["status"] == "ok", f"expected ok, got {r['status']}"
-          top_person = r["hits"][0]["metadata"]["person"]
+          assert r.status == "ok", f"expected ok, got {r.status}"
+          top_person = r.hits[0]["metadata"]["person"]
           assert top_person == "Chuck Carroll", \
               f"expected Chuck Carroll first, got {top_person}"
           print(f"PASS: top hit for CIO query is {top_person}")
 
           # Known-good refusal: Tokyo is not in the dataset.
           r = retrieve("family offices in Tokyo", k=10)
-          assert r["status"] == "refuse_no_match", \
-              f"expected refuse_no_match, got {r['status']}"
+          assert r.status == "refuse_no_match", \
+              f"expected refuse_no_match, got {r.status}"
           print(f"PASS: Tokyo query correctly refused")
 
           # Known-good field refusal.
           r = retrieve("what is Chuck Carroll's email", k=10)
-          assert r["status"] == "refuse_field_missing", \
-              f"expected refuse_field_missing, got {r['status']}"
+          assert r.status == "refuse_field_missing", \
+              f"expected refuse_field_missing, got {r.status}"
           print(f"PASS: email query correctly refused (field missing)")
 
           print("\nAll RAG smoke tests passed.")
