@@ -15,7 +15,7 @@
 - **Will remain live for 21 days** via GitHub Actions deployment
 
 ### 3. Repository with Full Commit History
-- **Path:** This repository (`.git/` intact)
+- **Path:** https://github.com/JanAli-socool/Polarity-Falcon-IQ (`.git/` intact)
 - **Access:** Public or shared with optimize@falconscaling.com
 - **Key commits:** Discovery pipeline, verification, extraction, enrichment, canonical DB, retriever rewrite, agent, UI, tests, workflows
 
@@ -72,11 +72,11 @@
 3. **Evidence-bound claims** — Every answer cites record IDs (FOC_XXX) that link to firm team pages. Pre-generation check refuses LLM call when evidence lacks requested field (email/phone). Post-generation claim check catches hallucinated emails/record-IDs. The evidence panel shows source URL, confidence, last-verified date for every cited record.
 
 **Real limits (not marketing copy):**
-- 500 qualifying contacts (target 500) — target met; 70 firms, 12 verified emails, 55 LinkedIn profiles
+- 500 qualifying contacts (target 500) — target met; 69 firms, 12 verified emails, 38 LinkedIn profiles
 - 12 V1/V2 emails — published on firm team pages with MX verification
-- 55 LinkedIn profiles — published on firm team pages
+- 38 LinkedIn profiles — published on firm team pages
 - SEC data only covers registered advisors (misses true single-family offices which are SEC-exempt)
-- Geographic bias toward US (35/70 firms) — growing Europe/Asia coverage
+- Geographic bias toward US (35/69 firms) — only 4 countries total (US, Canada, UK, South Africa)
 - Mandate evidence thin — public sources rarely detail specific investment theses, sector focus, or check sizes
 
 **Why a paying user would keep paying:** The system replaces 20+ hours of manual research (Google → firm site → team page → LinkedIn → email guess → bounce) with a 30-second query that returns verified contacts with source links, confidence scores, and explicit "we don't know this" flags. The trust layer (epistemic gates + claim checks + staleness detection) means the user never has to wonder if a contact is real or a guess.

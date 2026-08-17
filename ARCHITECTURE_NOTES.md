@@ -40,10 +40,10 @@
 
 **Material Blind Spots Remaining:**
 - No direct phone number discovery (not on firm pages)
-- Limited LinkedIn profile URLs (only when published on firm site) — 55 profiles
+- Limited LinkedIn profile URLs (only when published on firm site) — 38 profiles
 - Email coverage: 12/500 V1/V2 verified — most firms don't publish individual emails
 - SEC data only covers registered advisors (excludes true single-family offices)
-- Geographic gaps in non-English markets
+- Geographic gaps in non-English markets (only 4 countries: US, Canada, UK, South Africa)
 
 ---
 
@@ -175,9 +175,9 @@
 **Only Required Goals Run:** Yes — only the three specified goals were tested with the agent.
 
 **Final Dataset Stats:**
-- 500 qualifying records across 70 firms
+- 500 qualifying records across 69 firms
 - 12 V1/V2 verified emails (MX verified)
-- 55 LinkedIn profiles (published on firm pages)
+- 38 LinkedIn profiles (published on firm pages)
 - 470 verified firms (379 official_or_related_domain, 68 official_domain)
 - 163 curated firms from 670 candidates
 - 11 discovery passes, 10,000+ raw hits, 670 unique candidates
