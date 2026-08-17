@@ -208,8 +208,10 @@ else:
     print("OK: target met")
 
 selected = selected[:TARGET_ROWS]
+RELEASE_ID = "REL_PIPELINE_500"
 for i, row in enumerate(selected, 1):
     row["Record ID"] = f"FOC_{i:03d}"
+    row["Release ID"] = RELEASE_ID
 
 with OUT_CSV.open("w", encoding="utf-8", newline="") as f:
     writer = csv.DictWriter(f, fieldnames=list(selected[0].keys()))

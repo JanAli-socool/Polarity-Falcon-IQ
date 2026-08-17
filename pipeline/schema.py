@@ -430,6 +430,7 @@ def export_csv(path: pathlib.Path):
     firms = {f["firm_id"]: f for f in get_all_firms()}
 
     fieldnames = [
+        "Release ID",
         "Record ID", "Family Office Name", "Family Office City", "Family Office State / Region",
         "Family Office Country", "Contact First Name", "Contact Last Name", "Contact Full Name",
         "Contact Job Title", "Contact Location", "Contact LinkedIn Profile",
@@ -450,6 +451,7 @@ def export_csv(path: pathlib.Path):
         for p in people:
             firm = firms[p["firm_id"]]
             writer.writerow({
+                "Release ID": "REL_PIPELINE_500",
                 "Record ID": p["record_id"],
                 "Family Office Name": firm["firm_name"],
                 "Family Office City": firm["firm_city"] or "",
@@ -494,7 +496,8 @@ def export_jsonl(path: pathlib.Path):
         for p in people:
             firm = firms[p["firm_id"]]
             rec = {
-                "Record ID": p["record_id"],
+                "release_id": "REL_PIPELINE_500",
+                "record_id": p["record_id"],
                 "Family Office Name": firm["firm_name"],
                 "Family Office City": firm["firm_city"] or "",
                 "Family Office State / Region": firm["firm_state"] or "",
