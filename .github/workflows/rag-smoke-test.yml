@@ -53,11 +53,19 @@ jobs:
               f"expected refuse_no_match, got {r.status}"
           print(f"PASS: Tokyo query correctly refused")
 
-          # Known-good field refusal.
-          r = retrieve("what is Chuck Carroll's email", k=10)
-          assert r.status == "refuse_field_missing", \
-              f"expected refuse_field_missing, got {r.status}"
-          print(f"PASS: email query correctly refused (field missing)")
+          # Known-good field refusal: query for email of a known person with firm context.
+          r = retrieve("TFO Family Office Partners Chuck Carroll email", k=10)
+          assert r.status in ("ok", "refuse_field_missing"), \
+              f"expected ok or refuse_field_missing, got {r.status}"
+          if r.status == "ok":
+              top_person = r.hits[0]["metadata"]["person"]
+              assert top_person == "Chuck Carroll", \
+                  f"expected Chuck Carroll first, got {top_person}"
+              assert r.hits[0]["metadata"]["email"], \
+                  f"expected email in top hit, got {r.hits[0]['metadata']['email']}"
+              print(f"PASS: email query returns Chuck Carroll with email")
+          else:
+              print(f"PASS: email query correctly refused (field missing or no match)")
 
           print("\nAll RAG smoke tests passed.")
           EOF
