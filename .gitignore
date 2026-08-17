@@ -2,4 +2,5 @@
 .env
 __pycache__/
 *.pyc
-falcon-fo.bundle
+falcon-fo.bundlevenv/
+rag/chroma_db/
