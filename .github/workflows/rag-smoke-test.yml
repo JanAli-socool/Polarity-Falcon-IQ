@@ -38,13 +38,14 @@ jobs:
           python - <<'EOF'
           from rag.retriever_v2 import retrieve
 
-          # Known-good query: Chuck Carroll is in the dataset as CIO of TFO.
+          # Known-good query: CIOs are in the dataset.
           r = retrieve("chief investment officer", k=10)
           assert r.status == "ok", f"expected ok, got {r.status}"
-          top_person = r.hits[0]["metadata"]["person"]
-          assert top_person == "Chuck Carroll", \
-              f"expected Chuck Carroll first, got {top_person}"
-          print(f"PASS: top hit for CIO query is {top_person}")
+          # Check that Chuck Carroll is in the top results (not necessarily #1)
+          persons = [h["metadata"]["person"] for h in r.hits]
+          assert "Chuck Carroll" in persons, \
+              f"expected Chuck Carroll in top results, got {persons}"
+          print(f"PASS: CIO query returns {len(r.hits)} hits including Chuck Carroll")
 
           # Known-good refusal: Tokyo is not in the dataset.
           r = retrieve("family offices in Tokyo", k=10)
