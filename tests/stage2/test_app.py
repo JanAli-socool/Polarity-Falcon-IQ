@@ -21,9 +21,8 @@ def test_buyer_workspace_pages_render_from_canonical_manifest():
     assert metrics["Person-owned emails"] == str(
         manifest["qualifying_email_count"]
     )
-
-    expected_gate = "Ready" if manifest["release_ready"] else "Building"
-    assert metrics["Release gate"] == expected_gate
+    assert metrics["Family offices"] == str(manifest["firm_count"])
+    assert metrics["LinkedIn profiles"] == str(manifest.get("linkedin_count", 0))
 
     app.switch_page("pages/1_Research_Agent.py").run()
     assert not app.exception
