@@ -10,7 +10,7 @@ import streamlit as st
 
 from stage2.paths import OPERATING_LOGS, RELEASE_CSV, RELEASE_MANIFEST
 
-REPOSITORY_URL = "https://github.com/JanAli-socool/falcon-fo"
+REPOSITORY_URL = "https://github.com/JanAli-socool/Polarity-Falcon-IQ"
 ACTIONS_URL = f"{REPOSITORY_URL}/actions"
 
 
