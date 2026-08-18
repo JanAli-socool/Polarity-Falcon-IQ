@@ -1,35 +1,29 @@
 {
-  "schema_version": "2.0",
-  "release_id": "REL_PIPELINE_500",
-  "created_at": "2026-08-18T00:00:00Z",
-  "canonical_source": "data/final/family_office_contacts.csv",
-  "record_count": 500,
-  "firm_count": 69,
-  "qualifying_email_count": 12,
-  "linkedin_count": 38,
-  "source_mix": {
-    "web_firm_team_page": 150,
-    "linkedin_company": 125,
-    "web_philanthropy": 50,
-    "web_news_appointments": 40,
-    "web_geo": 40,
-    "web_industry": 30,
-    "sec_edgar": 20,
-    "web_events": 20,
-    "web_associations": 20,
-    "web_next_gen": 15,
-    "web_outsourced": 15
-  },
-  "release_ready": true,
-  "readiness_failures": [],
+  "canonical_source": "/home/runner/work/Polarity-Falcon-IQ/Polarity-Falcon-IQ/data/stage2/state/records.jsonl",
+  "created_at": "2026-08-18T02:05:01Z",
+  "firm_count": 96,
+  "qualifying_email_count": 128,
+  "readiness_failures": [
+    "records 351 < 500",
+    "qualifying_emails 128 < 200"
+  ],
+  "record_count": 351,
+  "release_id": "REL_EDB390B8EA222D0C",
+  "release_ready": false,
   "representations": {
     "csv": {
-      "path": "data/final/family_office_contacts.csv",
-      "sha256": "48ab54e250744eac6662b96088c7e95b8026632452556ac60b68f220aea1d9bc"
+      "path": "/home/runner/work/Polarity-Falcon-IQ/Polarity-Falcon-IQ/data/final/family_office_contacts.csv",
+      "sha256": "4bf0f1b64ae7dee512b3a015c1c95a548e7dcbfa3ba63389ddc518ac6c479651"
     },
     "jsonl": {
-      "path": "data/final/family_office_contacts.jsonl",
-      "sha256": "f8426323f7a52a6a507ea522998fde0edcaf79d130e19c12fcbeb917260be367"
+      "path": "/home/runner/work/Polarity-Falcon-IQ/Polarity-Falcon-IQ/data/final/family_office_contacts.jsonl",
+      "sha256": "16b9c3f94a982346eb52cd660506e44dddccccab968a2f588bc2197867522646"
     }
+  },
+  "schema_version": "2.0",
+  "source_mix": {
+    "news_or_press": 63,
+    "other_public_source": 45,
+    "search_discovery": 243
   }
 }
