@@ -30,11 +30,29 @@ jobs:
         run: |
           python -m pip install -r requirements-dev.txt
           python -m pip install protobuf==4.25.3
+          # Install streamlit with protobuf for testing
+          pip install "streamlit>=1.30" --no-deps
+          pip install protobuf==4.25.3
           # Install RAG deps needed by app imports
           pip install "numpy<2" torch==2.2.2 --extra-index-url https://download.pytorch.org/whl/cpu
           pip install "transformers<4.45" "sentence-transformers<3.1" chromadb pandas
 
-      - name: Run policy and canonical-release tests
+      - name: Verify imports work
+        run: |
+          python -c "
+          import streamlit
+          from streamlit.testing.v1 import AppTest
+          import rag.retriever_v2
+          import rag.generator_v2
+          import rag.agent
+          import stage2.retrieval
+          import stage2.release
+          import stage2.agent
+          import pipeline.query_layer
+          print('All imports OK')
+          "
+
+- name: Run policy and canonical-release tests
         run: python -m pytest -q tests/stage2
 
       - name: Reconcile canonical JSONL, customer JSONL, CSV, and manifest
