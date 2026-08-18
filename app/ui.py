@@ -30,6 +30,9 @@ def configure_page(title: str, icon: str = "◫") -> None:
         .evidence-card h4 {margin:0 0 .25rem 0;}
         .small-muted {color:#617068; font-size:.86rem;}
         [data-testid="stMetric"] {background:white; border:1px solid #d9dfda; padding:.8rem; border-radius:12px;}
+        [data-testid="stMetric"] * {color: #17211b !important;}
+        [data-testid="stMetricValue"] {color: #17211b !important; font-size: 2rem !important;}
+        [data-testid="stMetricLabel"] {color: #617068 !important;}
         .stButton > button[kind="primary"] {background:#176b4d; border-color:#176b4d;}
         </style>
         """,
