@@ -220,15 +220,154 @@
 
 ---
 
+## 8. Search Interface Specification
+
+### 8.1 Evidence Search (`app/main.py`)
+
+**Endpoint:** `/` (root page)
+
+**Modes:**
+
+| Mode | Radio Value | Planner | Dependencies | Latency |
+|------|-------------|---------|--------------|---------|
+| Single Retrieval | `Single Retrieval (fast)` | Deterministic parser (`decompose_natural_language`) | None | ~200ms |
+| Agent | `Agent (multi-step)` | Groq Llama-3.3-70B / Llama-3.1-8B | `GROQ_API_KEY` in `st.secrets` | 8-15s |
+
+**Single Retrieval — Supported Queries:**
+
+| Query Pattern | Parsed Filters | Parsed Terms | Aggregate |
+|---------------|----------------|--------------|-----------|
+| `"chief investment officer"` | `{}` | `["chief investment officer"]` | `records` |
+| `"managing partner email"` | `{"has_email": true}` | `["managing partner"]` | `records` |
+| `"TFO Family Office Partners"` | `{"firm_name": "tfo family office partners"}` | `[]` | `records` |
+| `"healthcare family office"` | `{}` | `["healthcare", "family office"]` | `records` |
+| `"united states"` | `{"country": "united states"}` | `[]` | `records` |
+| `"how many firms"` | `{}` | `[]` | `firms` |
+| `"source mix"` | `{}` | `[]` | `source_mix` |
+
+**Parsing Rules (`decompose_natural_language`):**
+- `"email"` → `filters["has_email"] = true`
+- `"linkedin"` → `filters["route_type"] = "linkedin"`
+- `"health"` → `terms += ["healthcare"]`
+- `"lower-middle-market"` → `terms += ["lower-middle-market", "lower middle market"]`
+- `"private equity"` → `terms += ["private equity"]`
+- `"current"` → `filters["trust_state"] = "supported_current"`
+- `"united states" / "u.s." / "us"` → `filters["country"] = "united states"`
+- `"how many" + "firm"` → `aggregate = "firms"`
+- `"source mix"` → additional query with `aggregate = "source_mix"`
+- `"route mix" / "contact mix"` → additional query with `aggregate = "route_mix"`
+
+**Exact Filters Tab (Deterministic):**
+```python
+filters = {}
+if country != "Any": filters["country"] = country.lower()
+if firm_type != "Any": filters["firm_type"] = firm_type
+if role_class != "Any": filters["role_class"] = role_class
+if route_type != "Any": filters["route_type"] = route_type
+if has_email == "Required": filters["has_email"] = True
+terms = tuple(term.strip() for term in terms_text.split(",") if term.strip())
+query = RetrievalQuery(filters=filters, terms=terms, aggregate=aggregate)
+```
+
+**Agent Mode — Tool Schemas:**
+```python
+ALLOWED_TOOLS = {
+    "search_records": {
+        "filters": {"firm_name", "country", "firm_type", "role_class", "route_type", 
+                    "has_email", "intelligence_kind", "intelligence_term", 
+                    "source_class", "trust_state"},
+        "terms": "string[]",
+        "limit": "int[1,500]",
+        "offset": "int[0,]",
+        "aggregate": "records|firms|source_mix|route_mix|countries"
+    },
+    "compare_lmm_healthcare_lp_fit": {"limit": "int[1,100]"}
+}
+```
+
+**System Prompt (abridged):**
+> "You are a research planner, not a fact generator. Convert the buyer's goal into 2-6 calls to deterministic tools. Never answer the goal yourself. Use `compare_lmm_healthcare_lp_fit` for any goal about lower-middle-market healthcare LP fit. Return JSON only: `{"decision":"execute"|"refuse","reason":"...","tool_calls":[...]}`
+
+**Agent Output Validation (`_authorize_output`):**
+1. Replay each tool call against authorized corpus
+2. Verify output matches deterministic replay exactly
+3. Collect all cited `record_id`s
+4. Reject if any cited record not in authorized corpus
+5. Reject if `compare_lmm_healthcare_lp_fit` returns empty results (abstain)
+
+**Refusal Conditions:**
+- `decision: "refuse"` from planner
+- `claim_check["passed"] == false` (hallucinated email/record_id)
+- Distance gate: top hit distance > 0.50
+- Field-presence gate: requested field absent in top match
+- Pre-generation check: evidence lacks requested field
+- Unauthorized record citation
+
+---
+
+### 8.2 Research Agent (`pages/1_Research_Agent.py`)
+
+**Endpoint:** `/Research_Agent`
+
+**Pre-loaded Goals:**
+
+| Goal | Key | Tool Sequence |
+|------|-----|---------------|
+| Goal 1 | `shortlist` | `search_records(filters={has_email:true, country:"united states"}, terms=["healthcare"], aggregate="firms")` → `search_records(filters={has_email:true, country:"united states"}, terms=["healthcare"])` → `search_records(terms=["healthcare"], aggregate="source_mix")` |
+| Goal 2 | `lmm_healthcare_lp_fit` | `compare_lmm_healthcare_lp_fit(limit=20)` → `search_records(filters={has_email:true}, terms=["healthcare"], limit=100, aggregate="firms")` |
+| Goal 3 | `evidence_refresh` | `search_records(filters={trust_state:"supported_current"}, terms=["healthcare"], limit=100)` → `compare_lmm_healthcare_lp_fit(limit=20)` |
+
+**Custom Goal:** Free-text → planner decomposes → executes tool sequence → authority gate → render.
+
+**Output Structure:**
+```python
+AgentResult = {
+    "trace_id": "TRACE_<uuid>",
+    "goal": str,
+    "status": "ok" | "abstained" | "refused",
+    "planner_mode": "model" | "deterministic_fallback",
+    "model_metadata": {"model": str, "latency_ms": int, "usage": dict},
+    "plan": {"decision": "execute"|"refuse", "reason": str, "tool_calls": [ToolCall]},
+    "tool_results": [{"tool": str, "arguments": dict, "result": RetrievalResult}],
+    "render_authority": {"passed": bool, "decision": "render"|"abstain"|"refuse", "reason": str, "authorized_record_ids": []},
+    "customer_explanation": str,
+    "limitations": [str],
+    "trace": [Event]
+}
+```
+
+**Trace Events:**
+- `goal.received`, `plan.authorized`, `tool.call`, `tool.result`, `render.authority_decision`, `goal.completed`
+
+---
+
+### 8.3 Trust & Operations (`pages/2_Trust_and_Operations.py`)
+
+**Endpoint:** `/Trust_and_Operations`
+
+**Data Sources:**
+- `data/stage2/operating_logs/*.summary.json` — cycle summaries
+- `data/stage2/operating_logs/*.jsonl` — raw event logs
+- `data/canonical/contacts.db` tables: `run_log`, `staleness_log`, `discovery_log`
+
+**Staleness Checks (Scheduled):**
+| Check | Method | Action on Failure |
+|-------|--------|-------------------|
+| Firm content | HTTP GET + text search for FO phrases | `flagged` in `staleness_log` |
+| Source gone | HTTP status != 200 | `flagged` |
+| Email MX | `dns.resolver.resolve(domain, 'MX')` | `email_bounced` |
+
+---
+
 ## Submission Package Contents
 
 1. **Extended Retrieval Feature:** `app/main.py` (Streamlit UI with agent mode)
 2. **Running Agentic System:** `rag/agent.py` + `rag/retriever_v2.py` + `rag/generator_v2.py`
 3. **Repository:** Full commit history in `.git/` (this repo)
 4. **Operating Window Logs:** `data/audit/` (firm_curation, people_filter, staleness, verification)
-5. **500 Records:** `data/final/family_office_contacts.csv` + `.jsonl` + `data/canonical/contacts.db` (500 qualifying records, 70 firms, 12 V1/V2 emails)
+5. **500 Records:** `data/final/family_office_contacts.csv` + `.jsonl` + `data/canonical/contacts.db` (500 qualifying records, 69 firms, 12 V1/V2 emails)
 6. **Goal Outputs:** Structured outputs from 3 goals with raw agent traces
 7. **Tool Schemas:** `pipeline/query_layer.py` (QueryLayer), `rag/agent.py` (ToolCall, AgentResult)
 8. **Setup Instructions:** `README.md` + `requirements.txt`
 9. **Build Summary:** This document + `BUILD_SUMMARY.md`
-9. **Architecture Notes:** This document
+10. **Architecture Notes:** This document
