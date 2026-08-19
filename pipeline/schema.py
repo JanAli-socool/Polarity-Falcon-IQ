@@ -5,10 +5,12 @@
 import sqlite3
 import pathlib
 import json
+import csv
 from datetime import datetime, timezone
 from dataclasses import dataclass, asdict
 from typing import Optional, List, Dict, Any
 from enum import Enum
+from collections import Counter
 
 DB_PATH = pathlib.Path("data/canonical/contacts.db")
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -601,3 +603,81 @@ if __name__ == "__main__":
     print(f"Qualifying count: {count_qualifying()}")
     print(f"Qualifying with email (V1/V2): {count_qualifying_with_email()}")
     print(f"Firm distribution: {get_firm_counts()}")
+
+
+def export_manifest(
+    csv_path: pathlib.Path = pathlib.Path("data/final/family_office_contacts.csv"),
+    jsonl_path: pathlib.Path = pathlib.Path("data/final/family_office_contacts.jsonl"),
+    manifest_path: pathlib.Path = pathlib.Path("data/final/release_manifest.json"),
+):
+    """Generate manifest from pipeline CSV/JSONL (not Stage 2 DB)."""
+    import hashlib
+    from datetime import datetime, timezone
+    from collections import Counter
+
+    def sha256_file(path: pathlib.Path) -> str:
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+
+    # Load CSV
+    csv_rows = []
+    with csv_path.open(encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        csv_rows = list(reader)
+
+    # Load JSONL
+    jsonl_rows = []
+    with jsonl_path.open(encoding="utf-8") as f:
+        for line in f:
+            jsonl_rows.append(json.loads(line))
+
+    assert len(csv_rows) == len(jsonl_rows), "Row count mismatch"
+    csv_ids = [r.get("Record ID") for r in csv_rows]
+    jsonl_ids = [r.get("record_id") or r.get("Record ID") for r in jsonl_rows]
+    assert csv_ids == jsonl_ids, "Record IDs disagree"
+
+    csv_release_ids = {r.get("Release ID") for r in csv_rows}
+    jsonl_release_ids = {r.get("release_id") or r.get("Release ID") for r in jsonl_rows}
+    assert len(csv_release_ids) == 1, f"Multiple Release IDs in CSV: {csv_release_ids}"
+    assert csv_release_ids == jsonl_release_ids, "Release IDs disagree"
+    release_id = next(iter(csv_release_ids))
+
+    # Count V1/V2 emails
+    v1_v2_count = sum(1 for r in csv_rows if r.get("Primary E-Mail Validation Code") in ("V1", "V2"))
+
+    # Count LinkedIn
+    linkedin_count = sum(1 for r in csv_rows if r.get("Contact LinkedIn Profile"))
+
+    # Source mix
+    source_mix = Counter(r.get("Discovery Source Class") for r in csv_rows if r.get("Discovery Source Class"))
+
+    # Countries
+    countries = sorted(set(r.get("Family Office Country") for r in csv_rows if r.get("Family Office Country")))
+
+    # Firm count
+    firm_count = len(set(r.get("Family Office Name") for r in csv_rows))
+
+    csv_sha = sha256_file(csv_path)
+    jsonl_sha = sha256_file(jsonl_path)
+
+    manifest = {
+        "schema_version": "2.0",
+        "release_id": release_id,
+        "created_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "canonical_source": str(csv_path),
+        "record_count": len(csv_rows),
+        "firm_count": firm_count,
+        "qualifying_email_count": v1_v2_count,
+        "linkedin_count": linkedin_count,
+        "source_mix": dict(sorted(source_mix.items())),
+        "release_ready": len(csv_rows) >= 500 and v1_v2_count >= 12,
+        "readiness_failures": [] if (len(csv_rows) >= 500 and v1_v2_count >= 12) else [f"records {len(csv_rows)} < 500"],
+        "representations": {
+            "csv": {"path": str(csv_path), "sha256": csv_sha},
+            "jsonl": {"path": str(jsonl_path), "sha256": jsonl_sha},
+        },
+    }
+
+    manifest_path.parent.mkdir(parents=True, exist_ok=True)
+    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True))
+    print(f"[ok] Generated manifest: {manifest_path}")
+    return manifest
