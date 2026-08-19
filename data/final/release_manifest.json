@@ -25,11 +25,11 @@
   "representations": {
     "csv": {
       "path": "data/final/family_office_contacts.csv",
-      "sha256": "283e50df3df4d13e9db0f87f1c7a1c44f1abd8ca896d175a91c77d72ccc4c10a"
+      "sha256": "12418d4a190a8125cf99205d68c5ec512fbcb7c85036a90e1cde8bdc03338d2f"
     },
     "jsonl": {
       "path": "data/final/family_office_contacts.jsonl",
-      "sha256": "271ef6698e7a2b2622b5b917001e463f076111663738f6c7d920d8e81ccc12c7"
+      "sha256": "8e82e2ed9ee1a7c75c2f58ec4a55f3ae3ef24dc4ab65a2ba70547b50e5e9b343"
     }
   }
 }
