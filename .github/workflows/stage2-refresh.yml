@@ -70,6 +70,11 @@ jobs:
       - name: Run discovery, enrichment, trust refresh, and replenishment
         run: python -m stage2.pipeline
 
+      - name: Build customer-facing artifacts (CSV, JSONL, manifest)
+        run: |
+          python -m pipeline.build_final
+          python -m stage2.release
+
       - name: Reconcile all customer representations
         if: always()
         run: |

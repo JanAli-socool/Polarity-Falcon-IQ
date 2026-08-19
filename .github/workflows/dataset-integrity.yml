@@ -55,8 +55,11 @@ jobs:
       - name: Run policy and canonical-release tests
         run: python -m pytest -q tests/stage2
 
-      - name: Build canonical dataset (generates fresh CSV/JSONL/manifest)
+      - name: Build canonical dataset (generates fresh CSV/JSONL)
         run: python -m pipeline.build_final
+
+      - name: Generate release manifest with correct checksums
+        run: python -m stage2.release
 
       - name: Reconcile canonical JSONL, customer JSONL, CSV, and manifest
         run: python -m stage2.release --reconcile-only
