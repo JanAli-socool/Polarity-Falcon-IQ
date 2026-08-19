@@ -35,6 +35,26 @@ DIRECTORY_SOURCES = (
         "source_class": "other_public_source",
         "label": "Big Black Book family-office directory",
     },
+    {
+        "url": "https://www.familyoffice.com/family-office-directory/",
+        "source_class": "association_directory",
+        "label": "FamilyOffice.com directory",
+    },
+    {
+        "url": "https://www.campdenwealth.com/research/family-office-directory",
+        "source_class": "association_directory",
+        "label": "Campden Wealth family office directory",
+    },
+    {
+        "url": "https://www.familyofficeinsights.com/family-office-directory",
+        "source_class": "association_directory",
+        "label": "Family Office Insights directory",
+    },
+    {
+        "url": "https://www.globalfamilyoffice.com/family-office-directory",
+        "source_class": "association_directory",
+        "label": "Global Family Office directory",
+    },
 )
 
 SEARCH_QUERIES = (
@@ -54,6 +74,20 @@ SEARCH_QUERIES = (
     '"family office" team Middle East investments',
     '"family office" team Latin America investments',
     'site:adviserinfo.sec.gov/firm/summary "family office"',
+    '"family office" "portfolio manager" healthcare',
+    '"family office" "investment director" technology',
+    '"family office" "managing director" private equity',
+    '"family office" "principal" venture capital',
+    '"family office" "partner" real estate investments',
+    '"family office" "co-investment" direct',
+    '"family office" "fund investments" limited partner',
+    '"family office" "allocation" private markets',
+    '"family office" "check size" lower middle market',
+    '"family office" "family wealth" investment team',
+    '"single family office" "chief investment officer"',
+    '"multi family office" "investment committee"',
+    '"family office" "office of the CIO"',
+    '"family office" "head of investments"',
 )
 
 EXCLUDED_HOSTS = {

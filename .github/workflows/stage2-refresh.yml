@@ -16,11 +16,11 @@ on:
       max_candidates:
         description: "Maximum firm candidates to enrich this cycle"
         required: false
-        default: "120"
+        default: "200"
       search_results_per_query:
         description: "Discovery results requested per query"
         required: false
-        default: "35"
+        default: "50"
 
 permissions:
   contents: write
@@ -33,9 +33,9 @@ env:
   PYTHONUNBUFFERED: "1"
   STAGE2_TRIGGER: ${{ github.event_name }}
   STAGE2_CYCLE_ID: ${{ github.run_id }}
-  STAGE2_MAX_CANDIDATES: ${{ inputs.max_candidates || '120' }}
-  STAGE2_SEARCH_RESULTS_PER_QUERY: ${{ inputs.search_results_per_query || '35' }}
-  STAGE2_TRUST_REFRESH_BATCH: "75"
+  STAGE2_MAX_CANDIDATES: ${{ inputs.max_candidates || '200' }}
+  STAGE2_SEARCH_RESULTS_PER_QUERY: ${{ inputs.search_results_per_query || '50' }}
+  STAGE2_TRUST_REFRESH_BATCH: "100"
 
 jobs:
   refresh:

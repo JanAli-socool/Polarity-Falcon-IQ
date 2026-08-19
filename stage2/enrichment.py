@@ -33,7 +33,7 @@ ROLE_PATTERNS: tuple[tuple[re.Pattern[str], str], ...] = (
 NAME_RE = re.compile(
     r"\b([A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿ'’.-]+(?:\s+[A-ZÀ-ÖØ-Ý][A-Za-zÀ-ÖØ-öø-ÿ'’.-]+){1,3})\b"
 )
-TEAM_LINK_WORDS = ("team", "people", "leadership", "professionals", "who-we-are", "about-us", "our-firm")
+TEAM_LINK_WORDS = ("team", "people", "leadership", "professionals", "who-we-are", "about-us", "our-firm", "our-people", "meet-the-team", "management", "partners", "principals", "investment-team", "investment-professionals", "advisors", "advisers", "executives", "senior-team", "management-team")
 SOCIAL_HOSTS = {"linkedin.com", "facebook.com", "instagram.com", "x.com", "twitter.com", "youtube.com"}
 ASSET_TERMS = {
     "Private equity": ("private equity", "buyout"),
@@ -277,7 +277,7 @@ def extract_official_people(
     return records
 
 
-def _team_urls(home: Observation, limit: int = 8) -> list[str]:
+def _team_urls(home: Observation, limit: int = 15) -> list[str]:
     soup = BeautifulSoup(home.text, "lxml")
     urls: list[str] = [home.final_url]
     for anchor in soup.find_all("a", href=True):
@@ -298,7 +298,7 @@ def _linkedin_search_records(
     enrichments: list[dict[str, Any]],
     log: OperatingLog,
     *,
-    max_results: int = 8,
+    max_results: int = 15,
 ) -> list[dict[str, Any]]:
     if not enrichments:
         return []
@@ -396,8 +396,8 @@ def enrich_candidate(
             candidate=candidate, observation=page, classification_evidence=classification,
             enrichments=page_enrichments, log=log,
         ))
-    if linkedin_fallback and len(records) < 3:
-        records.extend(_linkedin_search_records(candidate, classification, enrichments, log))
+    if linkedin_fallback and len(records) < 5:
+        records.extend(_linkedin_search_records(candidate, classification, enrichments, log, max_results=15))
 
     deduped: dict[str, dict[str, Any]] = {}
     for record in records:
