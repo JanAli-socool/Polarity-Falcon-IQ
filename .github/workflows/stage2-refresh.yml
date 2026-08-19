@@ -105,9 +105,7 @@ jobs:
             exit 0
           fi
           git commit -m "Record unattended Stage 2 cycle $GITHUB_RUN_ID attempt $GITHUB_RUN_ATTEMPT"
-          git stash --include-untracked
-          git pull --rebase origin "$GITHUB_REF_NAME"
-          git stash pop || true
+          git pull --rebase --autostash origin "$GITHUB_REF_NAME"
           git push origin "HEAD:$GITHUB_REF_NAME"
 
       - name: Write buyer-state summary
