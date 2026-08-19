@@ -52,7 +52,7 @@ jobs:
           print('All imports OK')
           "
 
-- name: Run policy and canonical-release tests
+      - name: Run policy and canonical-release tests
         run: python -m pytest -q tests/stage2
 
       - name: Reconcile canonical JSONL, customer JSONL, CSV, and manifest
