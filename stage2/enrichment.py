@@ -35,6 +35,19 @@ NAME_RE = re.compile(
 )
 TEAM_LINK_WORDS = ("team", "people", "leadership", "professionals", "who-we-are", "about-us", "our-firm", "our-people", "meet-the-team", "management", "partners", "principals", "investment-team", "investment-professionals", "advisors", "advisers", "executives", "senior-team", "management-team")
 SOCIAL_HOSTS = {"linkedin.com", "facebook.com", "instagram.com", "x.com", "twitter.com", "youtube.com"}
+CONTACT_PAGE_WORDS = ("contact", "contact-us", "get-in-touch", "reach-us", "email-us", "mail-us")
+EMAIL_SEARCH_QUERIES = (
+    '"{firm}" email "@" "@"',
+    '"{firm}" "email" "@" "com"',
+    '"{firm}" "mailto:"',
+    '"{firm}" "chief investment officer" email',
+    '"{firm}" "managing partner" email',
+    '"{firm}" "managing director" email',
+    '"{firm}" partner email',
+    '"{firm}" principal email',
+    '"{firm}" "chief investment officer" "@"',
+    '"{firm}" "managing partner" "@"',
+)
 ASSET_TERMS = {
     "Private equity": ("private equity", "buyout"),
     "Venture capital": ("venture capital", "venture investments", "startups"),
@@ -362,6 +375,195 @@ def _linkedin_search_records(
     return records
 
 
+def _extract_emails_from_page(
+    observation: Observation,
+    log: OperatingLog,
+    candidate: dict[str, Any],
+) -> list[dict[str, Any]]:
+    """Extract email routes from a page observation."""
+    routes = []
+    soup = BeautifulSoup(observation.text, "lxml")
+    
+    # Find mailto: links
+    for anchor in soup.find_all("a", href=True):
+        href = normalize_space(anchor.get("href"))
+        if not href.casefold().startswith("mailto:"):
+            continue
+        email = href[7:].split("?", 1)[0].strip().lower()
+        if "@" not in email:
+            continue
+        domain = email.rsplit("@", 1)[1]
+        if not _same_site(f"https://{domain}", candidate["homepage"]):
+            log.emit("email.domain_not_official", email=email, candidate=candidate["candidate_id"])
+            continue
+        
+        card, card_text = _route_card(anchor)
+        title, role_class = _title_and_role(card_text)
+        name = _name_from_card(card, card_text)
+        if not name or not title:
+            log.emit("email.no_name_title", email=email, url=observation.final_url)
+            continue
+        
+        evidence_quote = normalize_space(f"{card_text} {email}")[:1000]
+        route_evidence = build_evidence(
+            url=observation.final_url,
+            observed_at=observation.observed_at,
+            quote=evidence_quote,
+            source_class="official_firm_site",
+            extraction_method="official_dom_card_text_and_href",
+            supports=["person.name", "route.value", "route.ownership"],
+        )
+        
+        mx = _mx_present(email.rsplit("@", 1)[1], log)
+        route = {
+            "type": "email", "value": email,
+            "ownership_status": "source_names_person", "ownership_method": "official_dom_card",
+            "current_status": "published_on_current_official_source",
+            "domain_mail_status": "mx_present" if mx else "not_confirmed",
+            "shared": False, "inferred": False, "evidence": route_evidence,
+        }
+        routes.append({"route": route, "name": name, "title": title, "role_class": role_class, "card_text": card_text, "evidence": route_evidence})
+    
+    return routes
+
+
+def _discover_emails_from_search(
+    candidate: dict[str, Any],
+    log: OperatingLog,
+    *,
+    max_results: int = 20,
+) -> list[dict[str, Any]]:
+    """Discover emails via targeted search queries."""
+    routes = []
+    if not candidate.get("homepage"):
+        return routes
+    
+    firm_domain = urlparse(candidate["homepage"]).netloc.replace("www.", "")
+    if not firm_domain:
+        return routes
+    
+    engine = DDGS(timeout=20)
+    for query_template in EMAIL_SEARCH_QUERIES:
+        query = query_template.format(firm=candidate["firm_name"])
+        log.emit("email_search.started", provider="duckduckgo", query=query, max_results=max_results)
+        try:
+            results = list(DDGS(timeout=20).text(query, max_results=max_results))
+        except Exception as exc:
+            log.emit("email_search.failed", provider="duckduckgo", query=query, error_type=type(exc).__name__, error=str(exc)[:500])
+            continue
+        
+        for result in results:
+            href = normalize_space(result.get("href", ""))
+            title = normalize_space(result.get("title", ""))
+            body = normalize_space(result.get("body", ""))
+            text = normalize_space(f"{title}. {body}")
+            
+            # Extract emails from text
+            email_matches = re.findall(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', text)
+            for email in email_matches:
+                email = email.lower().strip()
+                domain = email.rsplit("@", 1)[1] if "@" in email else ""
+                if not domain or not _same_site(f"https://{domain}", candidate["homepage"]):
+                    continue
+                
+                # Check if email contains firm tokens
+                firm_tokens = [t for t in re.findall(r"[A-Za-z0-9]+", candidate["firm_name"]) if len(t) > 3]
+                if firm_tokens and not any(t in email.casefold() for t in firm_tokens):
+                    continue
+                
+                # Find name in context
+                name = ""
+                for token in re.findall(r'[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+', text):
+                    if is_person_name(token):
+                        name = normalize_space(token)
+                        break
+                
+                if not name:
+                    continue
+                
+                # Extract title
+                title, role_class = _title_and_role(text)
+                if not title:
+                    continue
+                
+                evidence_quote = normalize_space(text)[:1000]
+                route_evidence = build_evidence(
+                    url=href if href else candidate["homepage"],
+                    observed_at=now_utc(),
+                    quote=evidence_quote,
+                    source_class="search_discovery",
+                    extraction_method="search_result_email_extraction",
+                    supports=["person.name", "route.value", "route.ownership"],
+                )
+                
+                mx = _mx_present(email.rsplit("@", 1)[1], log)
+                route = {
+                    "type": "email", "value": email,
+                    "ownership_status": "source_names_person", "ownership_method": "search_result_context",
+                    "current_status": "found_in_search_context",
+                    "domain_mail_status": "mx_present" if mx else "not_confirmed",
+                    "shared": False, "inferred": False, "evidence": route_evidence,
+                }
+                routes.append({"route": route, "name": name, "title": title, "role_class": role_class, "card_text": text[:1000], "evidence": route_evidence})
+        
+        log.emit("email_search.completed", provider="duckduckgo", query=query, returned=len(results), emails_found=len(routes))
+    
+    return routes
+
+
+def _discover_contact_page_emails(
+    candidate: dict[str, Any],
+    client: ObservableHttpClient,
+    log: OperatingLog,
+) -> list[dict[str, Any]]:
+    """Crawl contact pages for emails."""
+    routes = []
+    if not candidate.get("homepage"):
+        return routes
+    
+    try:
+        home = client.get(candidate["homepage"], purpose=f"homepage:{candidate['candidate_id']}")
+    except RuntimeError as exc:
+        log.emit("homepage.fetch_failed", candidate_id=candidate["candidate_id"], error=str(exc)[:300])
+        return routes
+    
+    soup = BeautifulSoup(home.text, "lxml")
+    contact_urls = set()
+    
+    # Find contact page links
+    for anchor in soup.find_all("a", href=True):
+        href = normalize_space(anchor.get("href"))
+        absolute = urljoin(home.final_url, href)
+        label = normalize_space(anchor.get_text(" ", strip=True)).casefold()
+        target = href.casefold()
+        
+        if not is_http_url(absolute) or not _same_site(home.final_url, absolute):
+            continue
+        if any(word in f"{label} {target}" for word in CONTACT_PAGE_WORDS):
+            contact_urls.add(absolute)
+    
+    # Also check common contact page paths
+    base_url = home.final_url.rstrip("/")
+    common_paths = ["/contact", "/contact-us", "/get-in-touch", "/contact.html", "/contact.php", "/about/contact", "/team/contact"]
+    for path in common_paths:
+        contact_urls.add(base_url + path)
+    
+    for url in list(contact_urls)[:5]:  # Limit to 5 contact pages
+        try:
+            page = client.get(url, purpose=f"contact_page:{candidate['candidate_id']}")
+        except RuntimeError:
+            continue
+        
+        if page.final_url in contact_urls:
+            contact_urls.remove(page.final_url)  # Avoid re-processing
+        
+        extracted = _extract_emails_from_page(page, log, candidate)
+        routes.extend(extracted)
+        log.emit("contact_page.emails_extracted", url=url, count=len(extracted))
+    
+    return routes
+
+
 def enrich_candidate(
     candidate: dict[str, Any],
     client: ObservableHttpClient,
@@ -398,6 +600,51 @@ def enrich_candidate(
         ))
     if linkedin_fallback and len(records) < 5:
         records.extend(_linkedin_search_records(candidate, classification, enrichments, log, max_results=15))
+    
+    # Email-specific discovery (only if we still need more emails)
+    email_routes_found = sum(1 for r in records for c in r.get("contact_routes", []) if c.get("type") == "email")
+    if email_routes_found < 3:
+        # Discover emails from search
+        search_email_routes = _discover_emails_from_search(candidate, log, max_results=15)
+        for er in search_email_routes:
+            records.append(build_record(
+                firm={
+                    "name": candidate["firm_name"], "type": candidate["firm_type"], "country": "",
+                    "classification_evidence": classification,
+                },
+                person={"name": er["name"], "title": er["title"], "role_class": er["role_class"], "role_evidence": er["evidence"]},
+                discovery={key: candidate["discovery"][key] for key in ("source_class", "url", "observed_at", "extraction_method")},
+                enrichments=enrichments,
+                contact_routes=[er["route"]],
+                freshness={
+                    "trust_state": "supported_with_limitations",
+                    "last_evidence_check_at": now_utc(),
+                    "basis_evidence_ids": [classification["evidence"]["evidence_id"], er["evidence"]["evidence_id"]],
+                    "reason": "Email found in search context with supporting context.",
+                },
+                lifecycle_status="candidate",
+            ))
+        
+        # Discover emails from contact pages
+        contact_email_routes = _discover_contact_page_emails(candidate, client, log)
+        for er in contact_email_routes:
+            records.append(build_record(
+                firm={
+                    "name": candidate["firm_name"], "type": candidate["firm_type"], "country": "",
+                    "classification_evidence": classification,
+                },
+                person={"name": er["name"], "title": er["title"], "role_class": er["role_class"], "role_evidence": er["evidence"]},
+                discovery={key: candidate["discovery"][key] for key in ("source_class", "url", "observed_at", "extraction_method")},
+                enrichments=enrichments,
+                contact_routes=[er["route"]],
+                freshness={
+                    "trust_state": "supported_current",
+                    "last_evidence_check_at": now_utc(),
+                    "basis_evidence_ids": [classification["evidence"]["evidence_id"], er["evidence"]["evidence_id"]],
+                    "reason": "Email found on firm contact page with supporting context.",
+                },
+                lifecycle_status="candidate",
+            ))
 
     deduped: dict[str, dict[str, Any]] = {}
     for record in records:
