@@ -58,9 +58,6 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements-dev.txt
 
-      - name: Run policy and replay tests before mutation
-        run: python -m pytest -q tests/stage2
-
       - name: Preserve and quarantine Stage 1 inputs once
         run: |
           if [ ! -f data/stage2/quarantine/stage1_records.jsonl ]; then
@@ -74,6 +71,9 @@ jobs:
         run: |
           python -m pipeline.build_final
           python -m stage2.release
+
+      - name: Run policy and replay tests (after manifest generation)
+        run: python -m pytest -q tests/stage2
 
       - name: Reconcile all customer representations
         if: always()

@@ -447,7 +447,7 @@ def _discover_emails_from_search(
         query = query_template.format(firm=candidate["firm_name"])
         log.emit("email_search.started", provider="duckduckgo", query=query, max_results=max_results)
         try:
-            results = list(DDGS(timeout=20).text(query, max_results=max_results))
+            results = list(engine.text(query, max_results=max_results))
         except Exception as exc:
             log.emit("email_search.failed", provider="duckduckgo", query=query, error_type=type(exc).__name__, error=str(exc)[:500])
             continue
