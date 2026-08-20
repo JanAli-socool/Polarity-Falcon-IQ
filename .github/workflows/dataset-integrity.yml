@@ -52,14 +52,14 @@ jobs:
           print('All imports OK')
           "
 
-      - name: Run policy and canonical-release tests
-        run: python -m pytest -q tests/stage2
-
       - name: Build canonical dataset (generates fresh CSV/JSONL)
         run: python -m pipeline.build_final
 
       - name: Generate manifest from pipeline CSV/JSONL
         run: python -c "from pipeline.schema import export_manifest; export_manifest()"
+
+      - name: Run policy and canonical-release tests
+        run: python -m pytest -q tests/stage2
 
       - name: Reconcile pipeline CSV/JSONL/manifest
         run: python pipeline/reconcile.py
