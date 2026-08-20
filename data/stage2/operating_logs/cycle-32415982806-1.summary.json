@@ -1,0 +1,28 @@
+{
+  "cycle_id": "cycle-32415982806-1",
+  "details": {
+    "error": "'evidence'",
+    "error_type": "KeyError"
+  },
+  "elapsed_ms": 11348375,
+  "event_count": 1800,
+  "finished_at": "2026-08-20T23:58:05Z",
+  "metrics": {
+    "external_cost_usd": 0.0,
+    "http_attempts": 293,
+    "http_failed": 61,
+    "http_succeeded": 227,
+    "model_calls": 0,
+    "records_added": 0,
+    "records_after": 0,
+    "records_before": 478,
+    "records_quarantined": 0,
+    "retries": 5
+  },
+  "raw_log": "stage2/operating_logs/cycle-32415982806-1.jsonl",
+  "schema_version": "1.0",
+  "started_at": "2026-08-20T20:48:56Z",
+  "status": "failed",
+  "summary_sha256": "b5be6089d2b7409f3faaf4b925e8132e8e6e181f4da79723c9c4b6d084da6457",
+  "trigger": "push"
+}
