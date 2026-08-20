@@ -607,19 +607,27 @@ def enrich_candidate(
         # Discover emails from search
         search_email_routes = _discover_emails_from_search(candidate, log, max_results=15)
         for er in search_email_routes:
+            if not isinstance(er, dict) or "evidence" not in er or "route" not in er:
+                log.emit("email.route_structure_invalid", candidate_id=candidate["candidate_id"], keys=list(er.keys()) if isinstance(er, dict) else "not_dict")
+                continue
+            evidence = er["evidence"]
+            evidence_id = evidence.get("evidence_id") if isinstance(evidence, dict) else None
+            if not evidence_id:
+                log.emit("email.evidence_missing_id", candidate_id=candidate["candidate_id"])
+                continue
             records.append(build_record(
                 firm={
                     "name": candidate["firm_name"], "type": candidate["firm_type"], "country": "",
                     "classification_evidence": classification,
                 },
-                person={"name": er["name"], "title": er["title"], "role_class": er["role_class"], "role_evidence": er["evidence"]},
+                person={"name": er.get("name", ""), "title": er.get("title", ""), "role_class": er.get("role_class", ""), "role_evidence": er.get("evidence", {})},
                 discovery={key: candidate["discovery"][key] for key in ("source_class", "url", "observed_at", "extraction_method")},
                 enrichments=enrichments,
                 contact_routes=[er["route"]],
                 freshness={
                     "trust_state": "supported_with_limitations",
                     "last_evidence_check_at": now_utc(),
-                    "basis_evidence_ids": [classification["evidence"]["evidence_id"], er["evidence"]["evidence_id"]],
+                    "basis_evidence_ids": [classification["evidence"]["evidence_id"], evidence_id],
                     "reason": "Email found in search context with supporting context.",
                 },
                 lifecycle_status="candidate",
@@ -628,19 +636,27 @@ def enrich_candidate(
         # Discover emails from contact pages
         contact_email_routes = _discover_contact_page_emails(candidate, client, log)
         for er in contact_email_routes:
+            if not isinstance(er, dict) or "evidence" not in er or "route" not in er:
+                log.emit("email.route_structure_invalid", candidate_id=candidate["candidate_id"], keys=list(er.keys()) if isinstance(er, dict) else "not_dict")
+                continue
+            evidence = er["evidence"]
+            evidence_id = evidence.get("evidence_id") if isinstance(evidence, dict) else None
+            if not evidence_id:
+                log.emit("email.evidence_missing_id", candidate_id=candidate["candidate_id"])
+                continue
             records.append(build_record(
                 firm={
                     "name": candidate["firm_name"], "type": candidate["firm_type"], "country": "",
                     "classification_evidence": classification,
                 },
-                person={"name": er["name"], "title": er["title"], "role_class": er["role_class"], "role_evidence": er["evidence"]},
+                person={"name": er.get("name", ""), "title": er.get("title", ""), "role_class": er.get("role_class", ""), "role_evidence": er.get("evidence", {})},
                 discovery={key: candidate["discovery"][key] for key in ("source_class", "url", "observed_at", "extraction_method")},
                 enrichments=enrichments,
                 contact_routes=[er["route"]],
                 freshness={
                     "trust_state": "supported_current",
                     "last_evidence_check_at": now_utc(),
-                    "basis_evidence_ids": [classification["evidence"]["evidence_id"], er["evidence"]["evidence_id"]],
+                    "basis_evidence_ids": [classification["evidence"]["evidence_id"], evidence_id],
                     "reason": "Email found on firm contact page with supporting context.",
                 },
                 lifecycle_status="candidate",
