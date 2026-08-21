@@ -37,16 +37,9 @@ TEAM_LINK_WORDS = ("team", "people", "leadership", "professionals", "who-we-are"
 SOCIAL_HOSTS = {"linkedin.com", "facebook.com", "instagram.com", "x.com", "twitter.com", "youtube.com"}
 CONTACT_PAGE_WORDS = ("contact", "contact-us", "get-in-touch", "reach-us", "email-us", "mail-us")
 EMAIL_SEARCH_QUERIES = (
-    '"{firm}" email "@" "@"',
-    '"{firm}" "email" "@" "com"',
-    '"{firm}" "mailto:"',
+    '"{firm}" email "@"',
     '"{firm}" "chief investment officer" email',
     '"{firm}" "managing partner" email',
-    '"{firm}" "managing director" email',
-    '"{firm}" partner email',
-    '"{firm}" principal email',
-    '"{firm}" "chief investment officer" "@"',
-    '"{firm}" "managing partner" "@"',
 )
 ASSET_TERMS = {
     "Private equity": ("private equity", "buyout"),
@@ -431,7 +424,7 @@ def _discover_emails_from_search(
     candidate: dict[str, Any],
     log: OperatingLog,
     *,
-    max_results: int = 20,
+    max_results: int = 5,
 ) -> list[dict[str, Any]]:
     """Discover emails via targeted search queries."""
     routes = []
@@ -516,6 +509,8 @@ def _discover_contact_page_emails(
     client: ObservableHttpClient,
     log: OperatingLog,
 ) -> list[dict[str, Any]]:
+    # Skip contact page crawling in GitHub Actions to save time
+    return []
     """Crawl contact pages for emails."""
     routes = []
     if not candidate.get("homepage"):
@@ -548,7 +543,7 @@ def _discover_contact_page_emails(
     for path in common_paths:
         contact_urls.add(base_url + path)
     
-    for url in list(contact_urls)[:5]:  # Limit to 5 contact pages
+    for url in list(contact_urls)[:3]:  # Limit to 3 contact pages
         try:
             page = client.get(url, purpose=f"contact_page:{candidate['candidate_id']}")
         except RuntimeError:
@@ -599,11 +594,11 @@ def enrich_candidate(
             enrichments=page_enrichments, log=log,
         ))
     if linkedin_fallback and len(records) < 5:
-        records.extend(_linkedin_search_records(candidate, classification, enrichments, log, max_results=15))
+        records.extend(_linkedin_search_records(candidate, classification, enrichments, log, max_results=10))
     
     # Email-specific discovery (only if we still need more emails)
     email_routes_found = sum(1 for r in records for c in r.get("contact_routes", []) if c.get("type") == "email")
-    if email_routes_found < 3:
+    if email_routes_found < 2:
         # Discover emails from search
         search_email_routes = _discover_emails_from_search(candidate, log, max_results=15)
         for er in search_email_routes:

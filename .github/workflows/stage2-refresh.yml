@@ -16,11 +16,11 @@ on:
       max_candidates:
         description: "Maximum firm candidates to enrich this cycle"
         required: false
-        default: "200"
+        default: "100"
       search_results_per_query:
         description: "Discovery results requested per query"
         required: false
-        default: "50"
+        default: "20"
 
 permissions:
   contents: write
@@ -36,23 +36,23 @@ env:
   STAGE2_MAX_CANDIDATES: ${{ inputs.max_candidates || '200' }}
   STAGE2_SEARCH_RESULTS_PER_QUERY: ${{ inputs.search_results_per_query || '50' }}
   STAGE2_TRUST_REFRESH_BATCH: "100"
-
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 330
+    timeout-minutes: 360
+    
     steps:
       - name: Check out scheduler branch
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
+      
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
-
+      
       - name: Install free-tier pipeline dependencies
         run: |
           python -m pip install --upgrade pip
