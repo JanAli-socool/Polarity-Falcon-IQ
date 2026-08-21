@@ -627,7 +627,7 @@ def enrich_candidate(
                 freshness={
                     "trust_state": "supported_with_limitations",
                     "last_evidence_check_at": now_utc(),
-                    "basis_evidence_ids": [classification["evidence"]["evidence_id"], evidence_id],
+                    "basis_evidence_ids": [classification["evidence_id"], evidence_id],
                     "reason": "Email found in search context with supporting context.",
                 },
                 lifecycle_status="candidate",
@@ -656,7 +656,7 @@ def enrich_candidate(
                 freshness={
                     "trust_state": "supported_current",
                     "last_evidence_check_at": now_utc(),
-                    "basis_evidence_ids": [classification["evidence"]["evidence_id"], evidence_id],
+                    "basis_evidence_ids": [classification["evidence_id"], evidence_id],
                     "reason": "Email found on firm contact page with supporting context.",
                 },
                 lifecycle_status="candidate",
