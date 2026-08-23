@@ -106,7 +106,7 @@ jobs:
           fi
           git commit -m "Record unattended Stage 2 cycle $GITHUB_RUN_ID attempt $GITHUB_RUN_ATTEMPT"
           git pull --rebase --autostash origin "$GITHUB_REF_NAME"
-          git push origin "HEAD:$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME" --force-with-lease
 
       - name: Write buyer-state summary
         if: always()
