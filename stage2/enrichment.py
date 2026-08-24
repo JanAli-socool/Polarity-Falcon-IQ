@@ -227,11 +227,39 @@ def extract_official_people(
                 log.emit("extraction.route.rejected", url=observation.final_url, route_type=route_type, reason="email_domain_not_official_site")
                 continue
             mx = _mx_present(route_value.rsplit("@", 1)[1], log)
+            domain_status = "mx_present" if mx else "not_confirmed"
+            
+            # Determine email validation code based on evidence
+            # V1: Published on source page, MX verified, belongs to named individual (official_dom_card)
+            # V2: Published on source page, MX verified (but not necessarily official_dom_card)
+            # U1: Published on source page, MX unverified
+            # U2: Published on source page, MX lookup failed
+            # P0: Not published on source page (default)
+            # INFERRED: Pattern-generated
+            
+            ownership_status = "source_names_person"
+            ownership_method = "official_dom_card"
+            current_status = "published_on_current_official_source"
+            domain_status = "mx_present" if mx else "not_confirmed"
+            
+            # Determine validation code
+            if mx and ownership_method == "official_dom_card":
+                validation_code = "V1"
+            elif mx:
+                validation_code = "V2"
+            elif not mx and mx is not None:  # MX lookup succeeded but no MX records
+                validation_code = "U1"
+            elif mx is None:  # MX lookup failed (timeout, error, etc.)
+                validation_code = "U2"
+            else:
+                validation_code = "P0"
+            
             route = {
                 "type": "email", "value": route_value,
-                "ownership_status": "source_names_person", "ownership_method": "official_dom_card",
-                "current_status": "published_on_current_official_source",
-                "domain_mail_status": "mx_present" if mx else "not_confirmed",
+                "ownership_status": ownership_status, "ownership_method": ownership_method,
+                "current_status": current_status,
+                "domain_mail_status": domain_status,
+                "email_validation_code": validation_code,
                 "shared": False, "inferred": False, "evidence": route_evidence,
             }
         else:
@@ -413,6 +441,7 @@ def _extract_emails_from_page(
             "ownership_status": "source_names_person", "ownership_method": "official_dom_card",
             "current_status": "published_on_current_official_source",
             "domain_mail_status": "mx_present" if mx else "not_confirmed",
+            "email_validation_code": "V2" if mx else "U1",
             "shared": False, "inferred": False, "evidence": route_evidence,
         }
         routes.append({"route": route, "name": name, "title": title, "role_class": role_class, "card_text": card_text, "evidence": route_evidence})
@@ -487,17 +516,18 @@ def _discover_emails_from_search(
                     source_class="search_discovery",
                     extraction_method="search_result_email_extraction",
                     supports=["person.name", "route.value", "route.ownership"],
-                )
-                
-                mx = _mx_present(email.rsplit("@", 1)[1], log)
-                route = {
-                    "type": "email", "value": email,
-                    "ownership_status": "source_names_person", "ownership_method": "search_result_context",
-                    "current_status": "found_in_search_context",
-                    "domain_mail_status": "mx_present" if mx else "not_confirmed",
-                    "shared": False, "inferred": False, "evidence": route_evidence,
-                }
-                routes.append({"route": route, "name": name, "title": title, "role_class": role_class, "card_text": text[:1000], "evidence": route_evidence})
+)
+ 
+            mx = _mx_present(email.rsplit("@", 1)[1], log)
+            route = {
+                "type": "email", "value": email,
+                "ownership_status": "source_names_person", "ownership_method": "search_result_context",
+                "current_status": "found_in_search_context",
+                "domain_mail_status": "mx_present" if mx else "not_confirmed",
+                "email_validation_code": "V2" if mx else "U1",
+                "shared": False, "inferred": False, "evidence": route_evidence,
+            }
+            routes.append({"route": route, "name": name, "title": title, "role_class": role_class, "card_text": text[:1000], "evidence": route_evidence})
         
         log.emit("email_search.completed", provider="duckduckgo", query=query, returned=len(results), emails_found=len(routes))
     
