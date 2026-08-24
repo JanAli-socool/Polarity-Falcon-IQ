@@ -9,12 +9,15 @@ from dataclasses import dataclass
 from enum import Enum
 
 DB_PATH = pathlib.Path("data/canonical/contacts.db")
+DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+
 
 class QueryType(Enum):
     COUNT = "count"
     FILTER = "filter"
     AGGREGATE = "aggregate"
     SEARCH = "search"
+
 
 @dataclass
 class QueryResult:
@@ -24,6 +27,7 @@ class QueryResult:
     rows: List[Dict[str, Any]]
     row_count: int
     explanation: str
+
 
 class QueryLayer:
     """Deterministic SQL query interface for the canonical dataset."""
@@ -252,6 +256,178 @@ class QueryLayer:
             ORDER BY count DESC
         """
         return self.execute(sql, ())
+    
+    def staleness_summary(self, run_id: Optional[int] = None) -> QueryResult:
+        """Summary of staleness checks."""
+        conditions = []
+        params = []
+        if run_id:
+            conditions.append("run_id = ?")
+            params.append(run_id)
+        where = "WHERE " + " AND ".join(conditions) if conditions else ""
+        sql = f"""
+            SELECT check_type, action_taken, COUNT(*) as count
+            FROM staleness_log
+            {where}
+            GROUP BY check_type, action_taken
+            ORDER BY count DESC
+        """
+        return self.execute(sql, tuple(params))
+    
+    # ---- Run log queries ----
+    
+    def recent_runs(self, limit: int = 20) -> QueryResult:
+        """Get recent run log entries."""
+        sql = """
+            SELECT * FROM run_log
+            ORDER BY run_started DESC
+            LIMIT ?
+        """
+        return self.execute(sql, (limit,))
+    
+    def run_summary(self, run_id: int) -> QueryResult:
+        """Get detailed summary for a specific run."""
+        sql = "SELECT * FROM run_log WHERE run_id = ?"
+        return self.execute(sql, (run_id,))
+    
+    # ---- Natural language to SQL (simple intent mapping) ----
+    
+    def parse_and_execute(self, question: str) -> QueryResult:
+        """Simple intent detection for common questions."""
+        q = question.lower()
+        
+        # Count firms
+        if "how many firms" in q or "count firms" in q:
+            return self.count_firms()
+        
+        # Count people
+        if "how many people" in q or "count people" in q or "count contacts" in q:
+            return self.count_people()
+        
+        # People with email
+        if "email" in q and ("how many" in q or "count" in q):
+            return self.count_people(has_email=True)
+        
+        # People with LinkedIn
+        if "linkedin" in q and ("how many" in q or "count" in q):
+            return self.count_people(has_linkedin=True)
+        
+        # People by title
+        if "chief investment officer" in q or "cio" in q:
+            return self.search_people(title_contains="chief investment officer")
+        if "managing partner" in q:
+            return self.search_people(title_contains="managing partner")
+        if "managing director" in q:
+            return self.search_people(title_contains="managing director")
+        if "partner" in q and "how many" in q:
+            return self.count_people(title_contains="partner")
+        
+        # Firms by country
+        if "united states" in q or "us " in q or "usa" in q:
+            return self.count_firms(country="United States")
+        
+        # Default: search people by name/title keywords
+        keywords = ["chief", "managing", "director", "partner", "president", "founder", "cio", "cfo"]
+        for kw in keywords:
+            if kw in q:
+                return self.search_people(title_contains=kw)
+        
+        # Fallback: return all qualifying people (limited)
+        return self.search_people(limit=20)
+
+    def execute_with_filters(self, question: str, filters: Dict[str, Any]) -> QueryResult:
+        """Execute a query with explicit filters from agent decomposition."""
+        conditions = ["p.status = 'qualifying'"]
+        params = []
+        
+        # Helper for case-insensitive equality
+        def add_ci_equals(table_col: str, value: str):
+            conditions.append(f"LOWER({table_col}) = LOWER(?)")
+            params.append(value)
+        
+        # Helper for case-insensitive LIKE
+        def add_ci_like(table_col: str, value: str):
+            conditions.append(f"LOWER({table_col}) LIKE LOWER(?)")
+            params.append(f"%{value}%")
+        
+        # Firm name filter - case insensitive
+        if filters.get("firm_name"):
+            conditions.append("LOWER(f.firm_name) = LOWER(?)")
+            params.append(filters["firm_name"])
+        
+        # Country filter - case insensitive
+        if filters.get("country"):
+            conditions.append("LOWER(f.firm_country) = LOWER(?)")
+            params.append(filters["country"])
+        
+        # Firm type/verification tier - case insensitive
+        if filters.get("firm_type"):
+            conditions.append("LOWER(f.verification_tier) LIKE LOWER(?)")
+            params.append(f"%{filters['firm_type']}%")
+        
+        if filters.get("role_class"):
+            # Map role_class to actual title keywords in the data
+            role_keywords = {
+                "investment_decision_maker": ["chief investment officer", "cio", "head of investments", "director of investments", "managing director of investments", "investment director", "portfolio manager", "investment manager"],
+                "executive_decision_maker": ["chief executive officer", "ceo", "president", "chairman", "founder", "co-founder", "chairman", "chairwoman", "chairperson"],
+                "partner_or_principal": ["managing partner", "general partner", "senior partner", "partner", "principal"],
+                "capital_or_relationship_lead": ["head of capital", "head of relationships", "investor relations", "capital formation", "head of investor relations", "capital formation"],
+            }
+            keywords = role_keywords.get(filters["role_class"], [filters["role_class"]])
+            like_conditions = []
+            for kw in keywords:
+                like_conditions.append("(p.title_normalized LIKE ? OR p.job_title LIKE ?)")
+                params.extend([f"%{kw}%", f"%{kw}%"])
+            conditions.append("(" + " OR ".join(like_conditions) + ")")
+        
+        if filters.get("route_type"):
+            if filters["route_type"] == "email":
+                conditions.append("p.email != '' AND p.email_validation_code IN ('V1', 'V2')")
+            elif filters["route_type"] == "linkedin":
+                conditions.append("p.linkedin_url != '' AND p.linkedin_url != ''")
+        
+        if filters.get("has_email"):
+            conditions.append("p.email != '' AND p.email_validation_code IN ('V1', 'V2')")
+        
+        if filters.get("intelligence_kind"):
+            pass  # Would require joining with enrichments table
+        
+        if filters.get("intelligence_term"):
+            conditions.append("(p.email LIKE ? OR p.linkedin_url LIKE ? OR f.firm_name LIKE ? OR p.job_title LIKE ? OR p.title_normalized LIKE ?)")
+            term = f"%{filters['intelligence_term']}%"
+            params.extend([term] * 5)
+        
+        if filters.get("source_class"):
+            pass  # Would need to join with discovery_log
+        
+        if filters.get("trust_state"):
+            pass  # Would need to check freshness/trust_state
+        
+        if filters.get("has_email"):
+            conditions.append("p.email != '' AND p.email_validation_code IN ('V1', 'V2')")
+        
+        if filters.get("has_linkedin") is not None:
+            if filters["has_linkedin"]:
+                conditions.append("p.linkedin_url != '' AND p.linkedin_url != ''")
+            else:
+                conditions.append("(p.linkedin_url = '' OR p.linkedin_url IS NULL)")
+        
+        where = "WHERE " + " AND ".join(conditions) if conditions else ""
+        
+        # Default to search_people style query
+        sql = f"""
+            SELECT p.record_id, p.full_name, p.first_name, p.last_name,
+                   p.title_normalized, p.job_title, p.email, p.email_validation_code,
+                   p.email_quality, p.linkedin_url, p.phone,
+                   f.firm_name, f.verification_tier, f.firm_country,
+                   p.source_url, p.confidence, p.last_verified_date
+            FROM people p
+            JOIN firms f ON p.firm_id = f.firm_id
+            {where}
+            ORDER BY f.firm_name, p.record_id
+        """
+        
+        return self.execute(sql, tuple(params))
     
     def staleness_summary(self, run_id: Optional[int] = None) -> QueryResult:
         """Summary of staleness checks."""

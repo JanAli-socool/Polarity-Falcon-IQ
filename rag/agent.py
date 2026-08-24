@@ -177,13 +177,83 @@ class Agent:
             "rows": result.rows[:20],  # Limit rows in response
             "explanation": result.explanation,
         }
+
+    def tool_structured_query_with_filters(self, question: str, filters: Dict[str, Any]) -> Dict[str, Any]:
+        """Tool: Execute deterministic SQL query with explicit filters."""
+        result = self.query_layer.execute_with_filters(question, filters)
+        return {
+            "query_type": result.query_type.value if hasattr(result.query_type, 'value') else str(result.query_type),
+            "sql": result.sql,
+            "params": result.params,
+            "row_count": result.row_count,
+            "rows": result.rows[:20],
+            "explanation": result.explanation,
+        }
     
     def tool_decompose(self, complex_query: str) -> Dict[str, Any]:
-        """Tool: Decompose a complex multi-part query into sub-queries."""
+        """Tool: Decompose a complex multi-part query into structured sub-queries with filters."""
         q = complex_query.lower()
         sub_queries = []
+        filters = {}
         
-        # Pattern: "X and Y" or "X vs Y" or "compare X and Y"
+        # Extract firm names (quoted or capitalized phrases)
+        firm_matches = re.findall(r'"([^"]+)"', complex_query)  # "TFO Family Office"
+        if firm_matches:
+            filters["firm_name"] = firm_matches[0]
+        
+        # Geography detection
+        geo_terms = {
+            "united states": "united states", "usa": "united states", "u.s.": "united states", "us": "united states",
+            "canada": "canada", "uk": "united kingdom", "united kingdom": "united kingdom",
+            "switzerland": "switzerland", "singapore": "singapore", "hong kong": "hong kong",
+            "germany": "germany", "france": "france", "australia": "australia",
+            "south africa": "south africa", "brazil": "brazil", "uae": "united arab emirates",
+            "japan": "japan", "china": "china", "india": "india",
+        }
+        for geo, normalized in geo_terms.items():
+            if geo in q:
+                filters["country"] = normalized
+                break
+        
+        # Sector detection
+        sector_terms = {
+            "healthcare": ["healthcare", "health care", "life sciences", "biotech", "pharma"],
+            "technology": ["technology", "tech", "software", "digital", "ai", "artificial intelligence"],
+            "financial_services": ["financial services", "fintech", "banking", "wealth management", "asset management"],
+            "private_equity": ["private equity", "pe", "buyout", "venture capital", "vc"],
+            "real_estate": ["real estate", "property", "reit"],
+            "energy": ["energy", "oil", "gas", "renewable", "solar", "wind"],
+            "industrials": ["industrials", "manufacturing", "industrial"],
+            "consumer": ["consumer", "retail", "ecommerce", "brand"],
+        }
+        for sector, terms in sector_terms.items():
+            if any(term in q for term in terms):
+                terms.append(sector)
+        
+        # Role/title detection
+        role_terms = {
+            "investment_decision_maker": ["chief investment officer", "cio", "investment director", "portfolio manager", "investment manager"],
+            "executive_decision_maker": ["chief executive officer", "ceo", "president", "chairman", "founder", "co-founder"],
+            "partner_or_principal": ["managing partner", "general partner", "senior partner", "partner", "principal"],
+            "capital_or_relationship_lead": ["head of capital", "head of relationships", "investor relations", "capital formation"],
+        }
+        for role_class, terms in role_terms.items():
+            if any(term in q for term in terms):
+                filters["role_class"] = role_class
+                break
+        
+        # Email/LinkedIn filters
+        if "email" in q:
+            filters["has_email"] = True
+        if "linkedin" in q:
+            filters["route_type"] = "linkedin"
+        
+        # Trust state
+        if "current" in q or "recent" in q:
+            filters["trust_state"] = "supported_current"
+        
+        # Compound query patterns
+        sub_queries = []
         if " vs " in q or " versus " in q or " compare " in q:
             parts = re.split(r"\s+(?:vs|versus|compare)\s+", q, flags=re.IGNORECASE)
             for part in parts:
@@ -191,7 +261,6 @@ class Agent:
                 if part:
                     sub_queries.append(part.strip())
         
-        # Pattern: multiple distinct questions
         elif " and " in q and ("how many" in q or "count" in q or "list" in q):
             parts = re.split(r"\s+and\s+", q)
             for part in parts:
@@ -199,9 +268,7 @@ class Agent:
                 if part:
                     sub_queries.append(part)
         
-        # Pattern: "for X, show Y"
         elif " for " in q and ("show" in q or "list" in q or "find" in q):
-            # Split on "for"
             parts = re.split(r"\s+for\s+", q, flags=re.IGNORECASE)
             if len(parts) >= 2:
                 sub_queries.append(parts[0].strip())
@@ -214,6 +281,7 @@ class Agent:
         return {
             "original_query": complex_query,
             "sub_queries": sub_queries,
+            "filters": filters,
             "count": len(sub_queries),
         }
     
@@ -259,13 +327,34 @@ class Agent:
                     sub_answers.append("Structured query returned no results.")
                 continue
             
+            # Use structured query with filters if filters are present
+            sub_q_filters = decompose_result.get("filters", {})
+            if sub_q_filters:
+                # Build structured query with filters
+                sq_filters = {}
+                for k, v in sub_q_filters.items():
+                    if k in ["firm_name", "country", "firm_type", "role_class", "route_type", "has_email", 
+                            "intelligence_kind", "intelligence_term", "source_class", "trust_state"]:
+                        sq_filters[k] = v
+                
+                sq_result = self.tool_structured_query_with_filters(sub_q, sq_filters)
+                self._add_step(
+                    f"Executed structured query with filters: {sq_filters}",
+                    ToolCall(ToolName.STRUCTURED_QUERY, {"question": sub_q, "filters": sq_filters}, sq_result),
+                    f"Returned {sq_result['row_count']} rows"
+                )
+                
+                if sq_result["row_count"] > 0:
+                    answer_parts = []
+                    for row in sq_result["rows"][:10]:
+                        answer_parts.append(str(row))
+                    sub_answers.append(f"Structured query result: {'; '.join(answer_parts)}")
+                else:
+                    sub_answers.append("Structured query returned no results.")
+                continue
+            
             # Otherwise use semantic retrieval
             retrieve_result = self.tool_retrieve(sub_q, k=10)
-            self._add_step(
-                f"Retrieved {retrieve_result['hits_count']} records",
-                ToolCall(ToolName.RETRIEVE, {"query": sub_q, "k": 10}, retrieve_result),
-                f"Status: {retrieve_result['status']}, Can answer: {retrieve_result['can_answer']}"
-            )
             
             if retrieve_result["status"] != "ok" or not retrieve_result["can_answer"]:
                 sub_answers.append(f"Could not answer: {retrieve_result['reason']}")
