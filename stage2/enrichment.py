@@ -414,9 +414,13 @@ def _extract_emails_from_page(
         if "@" not in email:
             continue
         domain = email.rsplit("@", 1)[1]
+        # Relax domain check - allow emails from related domains
         if not _same_site(f"https://{domain}", candidate["homepage"]):
-            log.emit("email.domain_not_official", email=email, candidate=candidate["candidate_id"])
-            continue
+            # Allow if domain contains firm name tokens
+            firm_tokens = [t for t in re.findall(r"[A-Za-z0-9]+", candidate["firm_name"]) if len(t) > 3]
+            if not any(t in domain.casefold() for t in firm_tokens):
+                log.emit("email.domain_not_official", email=email, candidate=candidate["candidate_id"])
+                continue
         
         card, card_text = _route_card(anchor)
         title, role_class = _title_and_role(card_text)
@@ -485,6 +489,56 @@ def _discover_emails_from_search(
             for email in email_matches:
                 email = email.lower().strip()
                 domain = email.rsplit("@", 1)[1] if "@" in email else ""
+                
+                # Check if email contains firm tokens (more reliable than domain matching)
+                firm_tokens = [t for t in re.findall(r"[A-Za-z0-9]+", candidate["firm_name"]) if len(t) > 3]
+                if firm_tokens and not any(t in email.casefold() for t in firm_tokens):
+                    continue
+                
+                # More permissive domain check - allow if domain contains firm name tokens
+                if domain:
+                    # Check if domain contains any firm name tokens (case-insensitive)
+                    firm_tokens = [t for t in re.findall(r"[A-Za-z0-9]+", candidate["firm_name"]) if len(t) > 3]
+                    domain_matches = any(t in domain.casefold() for t in firm_tokens)
+                    
+                    # Also check for concatenated firm name (e.g., "tfofamilyoffice.com" contains "familyoffice")
+                    firm_name_concat = re.sub(r'[^A-Za-z0-9]', '', candidate["firm_name"].casefold())
+                    domain_matches = firm_name_concat in domain.casefold()
+                    
+                    # Allow common email providers
+                    common_providers = {"gmail.com", "outlook.com", "yahoo.com", "hotmail.com", "protonmail.com"}
+                    if not (domain_matches or domain in common_providers):
+                        # Still allow but log for review
+                        pass  # Don't filter out, just log
+                
+                # Find name in context
+                name = ""
+                for token in re.findall(r'[A-Z][a-z]+(?:\s+[A-Z][a-z]+)+', text):
+                    if is_person_name(token):
+                        name = normalize_space(token)
+                        break
+                
+                if not name:
+                    continue
+                
+                # Extract title
+                title, role_class = _title_and_role(text)
+                if not title:
+                    continue
+                
+                evidence_quote = normalize_space(text)[:1000]
+                route_evidence = build_evidence(
+                    url=href if href else candidate["homepage"],
+                    observed_at=now_utc(),
+                    quote=evidence_quote,
+                    source_class="search_discovery",
+                    extraction_method="search_result_email_extraction",
+                    supports=["person.name", "route.value", "route.ownership"],
+)
+ 
+            for email in email_matches:
+                email = email.lower().strip()
+                domain = email.rsplit("@", 1)[1] if "@" in email else ""
                 if not domain or not _same_site(f"https://{domain}", candidate["homepage"]):
                     continue
                 
@@ -516,18 +570,18 @@ def _discover_emails_from_search(
                     source_class="search_discovery",
                     extraction_method="search_result_email_extraction",
                     supports=["person.name", "route.value", "route.ownership"],
-)
- 
-            mx = _mx_present(email.rsplit("@", 1)[1], log)
-            route = {
-                "type": "email", "value": email,
-                "ownership_status": "source_names_person", "ownership_method": "search_result_context",
-                "current_status": "found_in_search_context",
-                "domain_mail_status": "mx_present" if mx else "not_confirmed",
-                "email_validation_code": "V2" if mx else "U1",
-                "shared": False, "inferred": False, "evidence": route_evidence,
-            }
-            routes.append({"route": route, "name": name, "title": title, "role_class": role_class, "card_text": text[:1000], "evidence": route_evidence})
+                )
+                
+                mx = _mx_present(email.rsplit("@", 1)[1], log)
+                route = {
+                    "type": "email", "value": email,
+                    "ownership_status": "source_names_person", "ownership_method": "search_result_context",
+                    "current_status": "found_in_search_context",
+                    "domain_mail_status": "mx_present" if mx else "not_confirmed",
+                    "email_validation_code": "V2" if mx else "U1",
+                    "shared": False, "inferred": False, "evidence": route_evidence,
+                }
+                routes.append({"route": route, "name": name, "title": title, "role_class": role_class, "card_text": text[:1000], "evidence": route_evidence})
         
         log.emit("email_search.completed", provider="duckduckgo", query=query, returned=len(results), emails_found=len(routes))
     

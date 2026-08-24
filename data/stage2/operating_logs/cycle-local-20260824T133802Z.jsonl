@@ -1,0 +1,2 @@
+{"at": "2026-08-24T13:38:02Z", "cycle_id": "cycle-local-20260824T133802Z", "details": {"github_run_attempt": "", "github_run_id": "", "github_sha": "", "repository": "", "scheduler_owned": false, "trigger": "manual_local"}, "event": "cycle.started", "schema_version": "1.0", "sequence": 1}
+{"at": "2026-08-24T13:38:04Z", "cycle_id": "cycle-local-20260824T133802Z", "details": {"max_results": 5, "provider": "duckduckgo", "query": "\"TFO Family Office Partners\" email \"@\""}, "event": "email_search.started", "schema_version": "1.0", "sequence": 2}
