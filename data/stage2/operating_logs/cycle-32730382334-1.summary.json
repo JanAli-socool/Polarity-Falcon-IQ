@@ -1,0 +1,28 @@
+{
+  "cycle_id": "cycle-32730382334-1",
+  "details": {
+    "error": "cannot access local variable 'email' where it is not associated with a value",
+    "error_type": "UnboundLocalError"
+  },
+  "elapsed_ms": 368067,
+  "event_count": 429,
+  "finished_at": "2026-08-24T13:10:03Z",
+  "metrics": {
+    "external_cost_usd": 0.0,
+    "http_attempts": 60,
+    "http_failed": 6,
+    "http_succeeded": 52,
+    "model_calls": 0,
+    "records_added": 0,
+    "records_after": 0,
+    "records_before": 509,
+    "records_quarantined": 0,
+    "retries": 2
+  },
+  "raw_log": "stage2/operating_logs/cycle-32730382334-1.jsonl",
+  "schema_version": "1.0",
+  "started_at": "2026-08-24T13:03:55Z",
+  "status": "failed",
+  "summary_sha256": "700da01d9f218be1c9d89aa6e6fab9ae790311606721274225ee2877cb331327",
+  "trigger": "push"
+}
