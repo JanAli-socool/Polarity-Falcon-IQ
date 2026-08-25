@@ -1,20 +1,20 @@
 {
   "canonical_source": "C:\\Users\\supreme-traders\\Documents\\Stage-2\\falcon-fo\\data\\stage2\\state\\records.jsonl",
-  "created_at": "2026-08-24T14:03:46Z",
+  "created_at": "2026-08-25T00:59:19Z",
   "firm_count": 144,
   "qualifying_email_count": 200,
   "readiness_failures": [],
   "record_count": 509,
-  "release_id": "REL_67797719D59E9099",
+  "release_id": "REL_31B722C2E0094D22",
   "release_ready": true,
   "representations": {
     "csv": {
       "path": "C:\\Users\\supreme-traders\\Documents\\Stage-2\\falcon-fo\\data\\final\\family_office_contacts.csv",
-      "sha256": "7a59e9d511bbdb751626411fb38182fc7850543e82a4a8d634513bce18acc419"
+      "sha256": "ea47b85b8069cf9d79f340866137fb52858a3b6ef7345337ae3de9243505bb33"
     },
     "jsonl": {
       "path": "C:\\Users\\supreme-traders\\Documents\\Stage-2\\falcon-fo\\data\\final\\family_office_contacts.jsonl",
-      "sha256": "262fd2f84df6375bf23034123e7388f1a67320a3d34036d29a1e2f73085b9f21"
+      "sha256": "b9ab25075a982e3403864060007a9769421458ee0727c7987ef2c9919aba7cb6"
     }
   },
   "schema_version": "2.0",

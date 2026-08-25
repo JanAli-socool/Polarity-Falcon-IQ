@@ -1,6 +1,5 @@
-# Stage 2 Architecture and Operating Notes
-
-**Snapshot:** 25 Aug 2026. This document distinguishes implemented controls from operating evidence that has actually been earned.
+# Architecture Notes
+# PolarityIQ Stage 2 — Agentic Family Office Intelligence System
 
 ## 1. Retrieval Extension
 
@@ -27,17 +26,17 @@
 **Source Classes & Strengths:**
 | Source Class | Records | Strength | Blind Spots |
 |-------------|---------|----------|-------------|
-| Web firm team pages | 150 | Firm self-identification, team structure | Only firms with public team pages |
-| LinkedIn company pages | 125 | Structured firm data, employee counts | No contact details, paywalled |
-| Web philanthropy | 60 | Foundation/family office connections | Secondary sources |
-| Web news appointments | 40 | Fresh signals, role changes | No firm verification |
-| Web geo | 40 | Regional firm presence | Partial coverage |
-| Web industry | 30 | AUM, mandate context | Secondary sources, potential bias |
-| SEC EDGAR | 20 | Regulatory verification, CIK mapping | Only registered advisors, stale filings |
-| Web events | 20 | Conference speakers, attendees | No firm verification |
-| Web associations | 20 | Network memberships | Member lists may be private |
-| Web next gen | 15 | Succession signals | Limited coverage |
-| Web outsourced | 15 | Virtual/outsourced FO models | May not be true FOs |
+| web_firm_team_pages | 150 | Firm self-identification, team structure | Only firms with public team pages |
+| linkedin_company | 125 | Structured firm data, employee counts | No contact details, paywalled |
+| web_philanthropy | 60 | Foundation/family office connections | Secondary sources |
+| web_news_appointments | 40 | Fresh signals, role changes | No firm verification |
+| web_geo | 40 | Regional firm presence | Partial coverage |
+| web_industry | 30 | AUM, mandate context | Secondary sources, potential bias |
+| sec_edgar | 20 | Regulatory verification, CIK mapping | Only registered advisors, stale filings |
+| web_events | 20 | Conference speakers, attendees | No firm verification |
+| web_associations | 20 | Network memberships | Member lists may be private |
+| web_next_gen | 15 | Succession signals | Limited coverage |
+| web_outsourced | 15 | Virtual/outsourced FO models | May not be true FOs |
 
 **Material Blind Spots Remaining:**
 - No direct phone number discovery (not on firm pages)
@@ -227,7 +226,7 @@
 2. **Running Agentic System:** `rag/agent.py` + `rag/retriever_v2.py` + `rag/generator_v2.py`
 3. **Repository:** Full commit history in `.git/` (this repo)
 4. **Operating Window Logs:** `data/audit/` (firm_curation, people_filter, staleness, verification)
-5. **520 Records:** `data/final/family_office_contacts.csv` + `.jsonl` + `data/canonical/contacts.db` (509 qualifying records, 144 firms, 203 V1/V2 emails)
+5. **500+ Records:** `data/final/family_office_contacts.csv` + `.jsonl` + `data/canonical/contacts.db` (509 qualifying records, 144 firms, 203 V1/V2 emails)
 6. **Goal Outputs:** Structured outputs from 3 goals with raw agent traces
 7. **Tool Schemas:** `pipeline/query_layer.py` (QueryLayer), `rag/agent.py` (ToolCall, AgentResult)
 8. **Setup Instructions:** `README.md` + `requirements.txt`
@@ -240,9 +239,9 @@
 
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| Qualifying Records | 509 | >=500 | ✅ |
+| Qualifying Records | 509 | ≥500 | ✅ |
 | Qualifying Firms | 144 | — | ✅ |
-| Verified Emails (V1/V2) | 200 | >=200 | ✅ |
+| Verified Emails (V1/V2) | 200 | ≥200 | ✅ |
 | LinkedIn Profiles | 38 | — | — |
 | Source Classes | 11 | — | ✅ |
 | Countries | 4 | — | — |

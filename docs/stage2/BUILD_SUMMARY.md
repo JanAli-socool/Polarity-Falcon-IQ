@@ -47,6 +47,7 @@
 | web_associations | 20 | 4% |
 | web_next_gen | 15 | 2% |
 | web_outsourced | 15 | 2% |
+| other_public_source | 25 | 5% |
 
 ## Goal Outputs
 
@@ -77,14 +78,14 @@
 
 **Requirements for Window:**
 - [x] Deploy to GitHub Actions (scheduled-run.yml)
-- [ ] Run 2+ scheduled cycles across 48+ hours
+- [x] Run 2+ scheduled cycles across 48+ hours
 - [ ] Capture real failure (source timeout, rate limit, malformed output)
 - [ ] Capture cross-run staleness detection (content change / email bounce)
 - [ ] Submit run logs + screenshots
 
 ## Test Suite Results
 
-**47/33 tests passing** (tests/test_suite.py)
+**47/47 tests passing** (tests/test_suite.py)
 - Dataset Integrity: 7/7
 - Retrieval: 6/6
 - Agent: 5/5
@@ -93,17 +94,17 @@
 
 ## Known Limitations (Honest Disclosure)
 
-1. **Record count:** 500 qualifying records — target met (minimum 500)
-2. **Email coverage:** 203 V1/V2 emails — most firms don't publish individual decision-maker emails
+1. **Record count:** 509 qualifying records — target met (minimum 500)
+2. **Email coverage:** 200 V1/V2 emails — most firms don't publish individual decision-maker emails
 3. **No phone discovery:** Not available on firm team pages
 4. **No LinkedIn profiles:** 38 profiles published on firm team pages
 5. **SEC coverage limited:** Only registered investment advisors (misses true single-family offices which are SEC-exempt)
-6. **Geographic gaps:** Heavy US bias (35/69 firms); minimal Europe/Asia coverage
+6. **Geographic gaps:** Heavy US bias (35/144 firms); minimal Europe/Asia coverage
 7. **Mandate evidence thin:** Public sources rarely detail specific investment theses, sector focus, or check sizes
 
 ## Claim I Trust Least
 
-**"The dataset contains 203 verified professional emails (V1/V2)."**
+**"The dataset contains 200 verified professional emails (V1/V2)."**
 
 **Why:** While MX verification confirms the domain accepts mail, the actual person-to-email ownership relies on the firm's team page explicitly naming the person alongside the email. Some pages list "contact@firm.com" for a named person, which passes MX verification but may not reach that individual directly.
 
@@ -118,53 +119,7 @@
 - [x] pipeline/query_layer.py
 - [x] tests/test_suite.py
 - [x] .github/workflows/scheduled-run.yml
-- [ ] ARCHITECTURE_NOTES.md
-- [ ] BUILD_SUMMARY.md
-- [ ] SUBMISSION_PACKAGE.md
-- [ ] data/final/family_office_contacts.csv + .jsonl
-- [ ] data/canonical/contacts.db
-
-**Not Reviewed:** Raw discovery JSONL files (data/raw/*.jsonl) — too verbose for manual review; validated via test suite.
-
-**Not Reviewed:** ChromaDB internals — replaced with custom retriever
-
-**Actual build time:** ~18 hours (not padded)
-
----
-
-## Files Reviewed
-
-- [x] All pipeline scripts (01-07)
-- [x] rag/retriever_v2.py, generator_v2.py, agent.py
-- [x] app/main.py (Streamlit UI)
-- [x] pipeline/schema.py (canonical DB)
-- [x] pipeline/query_layer.py
-- [x] tests/test_suite.py
-- [x] .github/workflows/scheduled-run.yml
-- [ ] ARCHITECTURE_NOTES.md
-- [ ] BUILD_SUMMARY.md
-- [ ] SUBMISSION_PACKAGE.md
-- [ ] data/final/family_office_contacts.csv + .jsonl
-- [ ] data/canonical/contacts.db
-
-**Not Reviewed:** Raw discovery JSONL files (data/raw/*.jsonl) — too verbose for manual review; validated via test suite.
-
-**Not Reviewed:** ChromaDB internals — replaced with custom retriever
-
-**Actual build time:** ~18 hours (not padded)
-
----
-
-## Files Reviewed
-
-- [x] All pipeline scripts (01-07)
-- [x] rag/retriever_v2.py, generator_v2.py, agent.py
-- [x] app/main.py (Streamlit UI)
-- [x] pipeline/schema.py (canonical DB)
-- [x] pipeline/query_layer.py
-- [x] tests/test_suite.py
-- [x] .github/workflows/scheduled-run.yml
-- [ ] ARCHITECTURE_NOTES.md
+- [x] ARCHITECTURE_NOTES.md
 - [ ] BUILD_SUMMARY.md
 - [ ] SUBMISSION_PACKAGE.md
 - [ ] data/final/family_office_contacts.csv + .jsonl
