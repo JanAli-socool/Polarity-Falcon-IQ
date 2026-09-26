@@ -1,20 +1,20 @@
 {
   "canonical_source": "/home/runner/work/Polarity-Falcon-IQ/Polarity-Falcon-IQ/data/stage2/state/records.jsonl",
-  "created_at": "2026-09-25T17:34:11Z",
+  "created_at": "2026-09-26T05:19:15Z",
   "firm_count": 252,
   "qualifying_email_count": 246,
   "readiness_failures": [],
   "record_count": 960,
-  "release_id": "REL_659BF0ED57E2AA5C",
+  "release_id": "REL_0AA960C487EA8890",
   "release_ready": true,
   "representations": {
     "csv": {
       "path": "/home/runner/work/Polarity-Falcon-IQ/Polarity-Falcon-IQ/data/final/family_office_contacts.csv",
-      "sha256": "62552a6573de1842317d49531f496705a2b89fa7deae4d65602621130bc4dd49"
+      "sha256": "aec3fb7a44a9e8c43dbcdf4769525037f39ae3c4ef63c12a7a50abfddda8a4f2"
     },
     "jsonl": {
       "path": "/home/runner/work/Polarity-Falcon-IQ/Polarity-Falcon-IQ/data/final/family_office_contacts.jsonl",
-      "sha256": "9bdcad964984131f7c51ea37a7fc7fafe853ed43bc72523f41cc0b129d3e3f5b"
+      "sha256": "659cd3e296e4fd3f53bd3e569cbd2a694050e237029f42599790c8e0be34cdbe"
     }
   },
   "schema_version": "2.0",
