@@ -52,7 +52,7 @@
 {"checked_at":"2026-09-06T04:47:14Z","content_sha256":"332d763c0b253a7027337fe8159021d011f52461660029fd6564d1b0b8abef5c","record_id":"FOC_7D693B34E17F","required_evidence_present":true,"url":"https://investorsglobe.com/investors/europe/michele-faissola"}
 {"checked_at":"2026-09-22T17:03:59Z","content_sha256":"8660229eb4c1eab893b69fb25e3f3bf0a6de219164199728fe68972f3c79dcb7","record_id":"FOC_FCEA0B3C68C5","required_evidence_present":true,"url":"https://iqeq.com/people/"}
 {"checked_at":"2026-09-18T04:52:40Z","content_sha256":"3eac73363be5fae87e5c63369fb7db9201db1374ebe9e6ee539fd0cda33b3b8a","record_id":"FOC_F17D7538CDBA","required_evidence_present":true,"url":"https://iqeq.com/us/people/"}
-{"checked_at":"2026-09-19T04:44:59Z","content_sha256":"9f7863bf7b92207dccdc7cbd6e473ed2a0c1674a515dd7bd4e3f787e9e83085b","record_id":"FOC_F0AFF5DC40FF","required_evidence_present":true,"url":"https://karmanbeyond.com/team/"}
+{"checked_at":"2026-10-01T18:35:58Z","content_sha256":"5ef3e5f16061681534ae50723d15b72dbfa3d1bdcf64176b90d469f1061d0961","record_id":"FOC_F0AFF5DC40FF","required_evidence_present":true,"url":"https://karmanbeyond.com/team/"}
 {"checked_at":"2026-09-21T05:06:11Z","content_sha256":"9fb7f186b56ae6c7fb6e544fc5576069905229e72f844cf70d9bbcd513f2cf4f","record_id":"FOC_E84D17449A00","required_evidence_present":true,"url":"https://kaufmanrossin.com/industries/broker-dealers-investment-advisers/"}
 {"checked_at":"2026-09-21T05:06:17Z","content_sha256":"dd236bd35c5672b1f6152b95f343eb551b91c407425cf6ec325744bc2df00e91","record_id":"FOC_77B324084568","required_evidence_present":true,"url":"https://kaufmanrossin.com/professionals/"}
 {"checked_at":"2026-09-21T05:06:19Z","content_sha256":"cfdbbfa93e38f452e648fe37a67e071ebf357e594324165e727a7d5283e9c6a6","record_id":"FOC_3F356F8246C7","required_evidence_present":true,"url":"https://kaufmanrossin.com/professionals/?p_service=family-office-services"}
@@ -88,7 +88,7 @@
 {"checked_at":"2026-09-21T18:17:59Z","content_sha256":"8e662f006ad75eabab9d49ac14b6c438393374df94b25eeb96b31fc2579ed837","record_id":"FOC_896511039EB3","required_evidence_present":true,"url":"https://steptrade.capital/family-office-direct-investments/"}
 {"checked_at":"2026-08-13T02:50:09Z","content_sha256":"0c57819a9f3afbfa1ea8cdf9d3227a88f4b9977f258294bc8f41e4074800d12f","record_id":"FOC_C144EE0A6743","required_evidence_present":true,"url":"https://taag.ca/about-us/our-team/"}
 {"checked_at":"2026-09-26T05:12:22Z","content_sha256":"22fabcf57b08ef831a6ad2dc03ab1ea4213a88cfd028e7bdafd4fdd8f368f9ae","record_id":"FOC_D906E90C0265","required_evidence_present":true,"url":"https://tiger21.com/about-us/"}
-{"checked_at":"2026-09-19T04:45:10Z","content_sha256":"1ed2a501d881bb27235c6c887c232338737e8c863b25c27e03dda536e0682368","record_id":"FOC_F9CB8E091FD5","required_evidence_present":true,"url":"https://trove.net/team/"}
+{"checked_at":"2026-10-01T18:35:59Z","content_sha256":"2f4df1810a5344a7dbb759b1fa3c9ce6cb50a2fc4a1458c7eed80d8c86a676cf","record_id":"FOC_3ABFDC110433","required_evidence_present":true,"url":"https://trove.net/team/"}
 {"checked_at":"2026-09-22T17:04:18Z","content_sha256":"efc15195a6b69767bb0e17daba0de2cec3b425763ea17328b76dd2b2c2e4c849","record_id":"FOC_C3BF4E46A2CB","required_evidence_present":true,"url":"https://truenorthadvisors.com/who-we-are/our-team/?no-cache"}
 {"checked_at":"2026-08-17T17:19:26Z","content_sha256":"8dd54c79fa1b6ed7fdd3be8d6afc795b2acd9027427e8c01df1919ced189ed68","record_id":"FOC_F419A2BD1DA6","required_evidence_present":true,"url":"https://ucea.pt/team/"}
 {"checked_at":"2026-09-26T05:12:27Z","content_sha256":"7c3357bbdff6e2e17892dc32ebd8c9cd5d7a958b04f6a3b3523d9d9cccbfd75d","record_id":"FOC_3D561731E349","required_evidence_present":true,"url":"https://uk.linkedin.com/in/everettkamin"}
@@ -161,7 +161,7 @@
 {"checked_at":"2026-09-20T16:14:02Z","content_sha256":"search-result-present","record_id":"FOC_9191FBDF1EE8","required_evidence_present":true,"url":"https://www.linkedin.com/in/alexwrightgladstein"}
 {"checked_at":"2026-09-14T18:06:47Z","content_sha256":"search-result-present","record_id":"FOC_627AD7DFB491","required_evidence_present":true,"url":"https://www.linkedin.com/in/alhemmingsen"}
 {"checked_at":"2026-09-28T05:33:24Z","content_sha256":"search-result-present","record_id":"FOC_BD33AF52D109","required_evidence_present":true,"url":"https://www.linkedin.com/in/allen-kuo-39631b3"}
-{"checked_at":"2026-09-19T04:44:05Z","content_sha256":"search-result-absent","record_id":"FOC_41F0CF3236E7","required_evidence_present":false,"url":"https://www.linkedin.com/in/allison-chen-7071004"}
+{"checked_at":"2026-10-01T18:27:54Z","content_sha256":"search-result-absent","record_id":"FOC_923217D87B76","required_evidence_present":false,"url":"https://www.linkedin.com/in/allison-chen-7071004"}
 {"checked_at":"2026-09-12T04:42:26Z","content_sha256":"search-result-present","record_id":"FOC_E4A2186909BE","required_evidence_present":true,"url":"https://www.linkedin.com/in/allshire"}
 {"checked_at":"2026-09-21T18:17:13Z","content_sha256":"search-result-present","record_id":"FOC_C42E216F6FEF","required_evidence_present":true,"url":"https://www.linkedin.com/in/amewing"}
 {"checked_at":"2026-09-20T16:15:13Z","content_sha256":"search-result-present","record_id":"FOC_1838D823097F","required_evidence_present":true,"url":"https://www.linkedin.com/in/aminkara"}
@@ -238,7 +238,7 @@
 {"checked_at":"2026-09-20T16:14:16Z","content_sha256":"search-result-present","record_id":"FOC_E075DF331471","required_evidence_present":true,"url":"https://www.linkedin.com/in/davidjallits"}
 {"checked_at":"2026-09-20T16:13:09Z","content_sha256":"search-result-present","record_id":"FOC_275AB970E695","required_evidence_present":true,"url":"https://www.linkedin.com/in/davidkrauss"}
 {"checked_at":"2026-09-21T18:16:16Z","content_sha256":"search-result-present","record_id":"FOC_F908002E2D91","required_evidence_present":true,"url":"https://www.linkedin.com/in/davidnbakerjd"}
-{"checked_at":"2026-09-18T16:30:19Z","content_sha256":"search-result-present","record_id":"FOC_F94510D639A3","required_evidence_present":true,"url":"https://www.linkedin.com/in/daynagrayson"}
+{"checked_at":"2026-10-01T18:30:04Z","content_sha256":"search-result-present","record_id":"FOC_F94510D639A3","required_evidence_present":true,"url":"https://www.linkedin.com/in/daynagrayson"}
 {"checked_at":"2026-09-13T16:24:48Z","content_sha256":"search-result-absent","record_id":"FOC_BA9F28B41AF9","required_evidence_present":false,"url":"https://www.linkedin.com/in/dcavitt"}
 {"checked_at":"2026-09-25T05:06:55Z","content_sha256":"search-result-present","record_id":"FOC_A89043B9411C","required_evidence_present":true,"url":"https://www.linkedin.com/in/dennis-jaffe-a686286"}
 {"checked_at":"2026-09-21T18:15:51Z","content_sha256":"search-result-present","record_id":"FOC_68C969A10547","required_evidence_present":true,"url":"https://www.linkedin.com/in/dennis-m-zaslavsky-760aa53b"}
@@ -248,7 +248,7 @@
 {"checked_at":"2026-09-20T16:15:15Z","content_sha256":"search-result-present","record_id":"FOC_AF12CB11FE3B","required_evidence_present":true,"url":"https://www.linkedin.com/in/donald-calcagni-8104b546"}
 {"checked_at":"2026-09-21T18:16:03Z","content_sha256":"search-result-present","record_id":"FOC_8DC66E01AE2A","required_evidence_present":true,"url":"https://www.linkedin.com/in/douglas-evans-73372310"}
 {"checked_at":"2026-09-22T17:03:33Z","content_sha256":"search-result-present","record_id":"FOC_B1A62E78B267","required_evidence_present":true,"url":"https://www.linkedin.com/in/douglas-hirsch-00201810"}
-{"checked_at":"2026-09-02T04:41:59Z","content_sha256":"search-result-present","record_id":"FOC_45200DE0D98D","required_evidence_present":true,"url":"https://www.linkedin.com/in/douglas-smith-esq"}
+{"checked_at":"2026-10-01T18:28:05Z","content_sha256":"search-result-present","record_id":"FOC_45200DE0D98D","required_evidence_present":true,"url":"https://www.linkedin.com/in/douglas-smith-esq"}
 {"checked_at":"2026-09-19T04:43:52Z","content_sha256":"search-result-present","record_id":"FOC_3C8C23488CB2","required_evidence_present":true,"url":"https://www.linkedin.com/in/dr-joaquin-g-molina-6955b240"}
 {"checked_at":"2026-09-20T16:16:01Z","content_sha256":"search-result-present","record_id":"FOC_4C3DAAF3213A","required_evidence_present":true,"url":"https://www.linkedin.com/in/dscottphoenix"}
 {"checked_at":"2026-08-28T22:25:50Z","content_sha256":"search-result-absent","record_id":"FOC_457286CB59AF","required_evidence_present":false,"url":"https://www.linkedin.com/in/durobinson"}
@@ -414,6 +414,7 @@
 {"checked_at":"2026-09-18T16:32:50Z","content_sha256":"search-result-present","record_id":"FOC_28D5F16DF38F","required_evidence_present":true,"url":"https://www.linkedin.com/in/peterthiel"}
 {"checked_at":"2026-09-27T17:10:40Z","content_sha256":"search-result-present","record_id":"FOC_3D55EFFA7242","required_evidence_present":true,"url":"https://www.linkedin.com/in/philclement"}
 {"checked_at":"2026-08-26T02:03:00Z","content_sha256":"search-result-absent","record_id":"FOC_2F867580F101","required_evidence_present":false,"url":"https://www.linkedin.com/in/phoebe-tan-b6a3166"}
+{"checked_at":"2026-10-01T18:31:56Z","content_sha256":"search-result-present","record_id":"FOC_C812A39AB028","required_evidence_present":true,"url":"https://www.linkedin.com/in/phoenixeyre"}
 {"checked_at":"2026-08-28T11:31:55Z","content_sha256":"search-result-absent","record_id":"FOC_FA07EFE1A5E0","required_evidence_present":false,"url":"https://www.linkedin.com/in/phoenixnormand"}
 {"checked_at":"2026-09-21T18:17:52Z","content_sha256":"search-result-absent","record_id":"FOC_BC5AD9622696","required_evidence_present":false,"url":"https://www.linkedin.com/in/pvonderahe"}
 {"checked_at":"2026-09-21T18:16:44Z","content_sha256":"search-result-present","record_id":"FOC_082CAA3AE20E","required_evidence_present":true,"url":"https://www.linkedin.com/in/raffaele-savi"}
@@ -466,7 +467,7 @@
 {"checked_at":"2026-09-24T17:20:52Z","content_sha256":"search-result-present","record_id":"FOC_C30A182F375C","required_evidence_present":true,"url":"https://www.linkedin.com/in/soniajohnson-pm"}
 {"checked_at":"2026-09-17T04:58:32Z","content_sha256":"search-result-present","record_id":"FOC_32135321B40F","required_evidence_present":true,"url":"https://www.linkedin.com/in/stanmiroshnik"}
 {"checked_at":"2026-09-20T16:14:10Z","content_sha256":"search-result-present","record_id":"FOC_2887DF5C72E2","required_evidence_present":true,"url":"https://www.linkedin.com/in/stephanroche"}
-{"checked_at":"2026-09-19T04:43:43Z","content_sha256":"search-result-present","record_id":"FOC_9F2CF0043B02","required_evidence_present":true,"url":"https://www.linkedin.com/in/sterling-curry-9066a0230"}
+{"checked_at":"2026-10-01T18:33:03Z","content_sha256":"search-result-present","record_id":"FOC_9F2CF0043B02","required_evidence_present":true,"url":"https://www.linkedin.com/in/sterling-curry-9066a0230"}
 {"checked_at":"2026-09-07T04:49:18Z","content_sha256":"search-result-present","record_id":"FOC_CDEE93DFA0BB","required_evidence_present":true,"url":"https://www.linkedin.com/in/steve-braverman-31795413"}
 {"checked_at":"2026-08-13T02:47:42Z","content_sha256":"search-result-absent","record_id":"FOC_899CDE9DAFE6","required_evidence_present":false,"url":"https://www.linkedin.com/in/steven-meves-2830544"}
 {"checked_at":"2026-09-01T16:44:36Z","content_sha256":"search-result-absent","record_id":"FOC_D0F2823FB633","required_evidence_present":false,"url":"https://www.linkedin.com/in/stuartbrowne"}
