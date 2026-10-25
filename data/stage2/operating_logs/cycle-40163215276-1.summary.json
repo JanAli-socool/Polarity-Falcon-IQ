@@ -1,0 +1,32 @@
+{
+  "cycle_id": "cycle-40163215276-1",
+  "details": {
+    "candidates_processed": 200,
+    "candidates_total": 3515,
+    "qualifying_emails": 198,
+    "records": 1175,
+    "release_id": "REL_BC39D95783DE6953",
+    "release_ready": false
+  },
+  "elapsed_ms": 8978750,
+  "event_count": 3092,
+  "finished_at": "2026-10-25T07:19:41Z",
+  "metrics": {
+    "external_cost_usd": 0.0,
+    "http_attempts": 514,
+    "http_failed": 34,
+    "http_succeeded": 453,
+    "model_calls": 0,
+    "records_added": 47,
+    "records_after": 1175,
+    "records_before": 1128,
+    "records_quarantined": 75,
+    "retries": 27
+  },
+  "raw_log": "stage2/operating_logs/cycle-40163215276-1.jsonl",
+  "schema_version": "1.0",
+  "started_at": "2026-10-25T04:50:03Z",
+  "status": "completed_below_target",
+  "summary_sha256": "dcb4dc726df749a1a9e42ea9bfd81aec39e4a2b7e6e421606e2bdc152b1d09a4",
+  "trigger": "schedule"
+}
