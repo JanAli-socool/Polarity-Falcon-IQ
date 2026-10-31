@@ -1,26 +1,26 @@
 {
   "canonical_source": "/home/runner/work/Polarity-Falcon-IQ/Polarity-Falcon-IQ/data/stage2/state/records.jsonl",
-  "created_at": "2026-10-30T20:42:04Z",
-  "firm_count": 318,
+  "created_at": "2026-10-31T05:54:54Z",
+  "firm_count": 317,
   "qualifying_email_count": 246,
   "readiness_failures": [],
-  "record_count": 1440,
-  "release_id": "REL_FE25729D17727D19",
+  "record_count": 1422,
+  "release_id": "REL_61626E1796874201",
   "release_ready": true,
   "representations": {
     "csv": {
       "path": "/home/runner/work/Polarity-Falcon-IQ/Polarity-Falcon-IQ/data/final/family_office_contacts.csv",
-      "sha256": "2bc95e46fa659a1a32516c96f11d26ca9f59e5ad4b4b317314cfe359570cae35"
+      "sha256": "60292938dc19c4fad4b785ba3d45dc84aac2b5b171a0d4e4f0b79d3292399d5e"
     },
     "jsonl": {
       "path": "/home/runner/work/Polarity-Falcon-IQ/Polarity-Falcon-IQ/data/final/family_office_contacts.jsonl",
-      "sha256": "15e0f2c51200bdbc8fa53a6d39bd6cf7204d27b57b6fe458a8b4f4a85a4fd9d7"
+      "sha256": "47edd96a5c03622bfbd6fb416d53f925901022477dc23bcb1109e62957db7b55"
     }
   },
   "schema_version": "2.0",
   "source_mix": {
     "news_or_press": 119,
     "other_public_source": 86,
-    "search_discovery": 1235
+    "search_discovery": 1217
   }
 }
