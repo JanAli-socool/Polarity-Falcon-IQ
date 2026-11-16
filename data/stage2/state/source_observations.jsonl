@@ -455,6 +455,7 @@
 {"checked_at":"2026-11-01T06:17:02Z","content_sha256":"search-result-present","record_id":"FOC_DB6647E7401D","required_evidence_present":true,"url":"https://www.linkedin.com/in/kirthiga"}
 {"checked_at":"2026-11-04T19:52:20Z","content_sha256":"search-result-present","record_id":"FOC_EAF85BF5FEBE","required_evidence_present":true,"url":"https://www.linkedin.com/in/kmhuang"}
 {"checked_at":"2026-10-11T06:09:26Z","content_sha256":"search-result-absent","record_id":"FOC_CCE7B5B1D813","required_evidence_present":false,"url":"https://www.linkedin.com/in/kristenmadsen"}
+{"checked_at":"2026-11-16T06:43:25Z","content_sha256":"search-result-present","record_id":"FOC_D78AE7192C78","required_evidence_present":true,"url":"https://www.linkedin.com/in/kristopher-prebola-4972784"}
 {"checked_at":"2026-11-09T22:28:43Z","content_sha256":"search-result-present","record_id":"FOC_B4382385FE53","required_evidence_present":true,"url":"https://www.linkedin.com/in/kunj-majmudar-12012640"}
 {"checked_at":"2026-10-07T18:59:53Z","content_sha256":"search-result-absent","record_id":"FOC_8FF2BBC57064","required_evidence_present":false,"url":"https://www.linkedin.com/in/kyle-fritz23"}
 {"checked_at":"2026-11-09T22:29:16Z","content_sha256":"search-result-present","record_id":"FOC_EB5D9DA81000","required_evidence_present":true,"url":"https://www.linkedin.com/in/ladonna-kearney-62a26517"}
@@ -613,7 +614,7 @@
 {"checked_at":"2026-10-31T05:53:58Z","content_sha256":"search-result-present","record_id":"FOC_81F46E9719FC","required_evidence_present":true,"url":"https://www.linkedin.com/in/ryan-clamage-8780b2124"}
 {"checked_at":"2026-10-02T17:56:40Z","content_sha256":"search-result-absent","record_id":"FOC_4122B8D6115C","required_evidence_present":false,"url":"https://www.linkedin.com/in/ryan-lauridsen-a2066253"}
 {"checked_at":"2026-11-08T18:01:00Z","content_sha256":"search-result-present","record_id":"FOC_7A6D2F0AB870","required_evidence_present":true,"url":"https://www.linkedin.com/in/ryan-mcnally-618a3"}
-{"checked_at":"2026-10-29T18:34:22Z","content_sha256":"search-result-present","record_id":"FOC_DA96A1E9BDF6","required_evidence_present":true,"url":"https://www.linkedin.com/in/ryandharris"}
+{"checked_at":"2026-11-16T06:42:20Z","content_sha256":"search-result-present","record_id":"FOC_DA96A1E9BDF6","required_evidence_present":true,"url":"https://www.linkedin.com/in/ryandharris"}
 {"checked_at":"2026-10-22T17:18:16Z","content_sha256":"search-result-absent","record_id":"FOC_1928B2804D90","required_evidence_present":false,"url":"https://www.linkedin.com/in/ryansinger"}
 {"checked_at":"2026-11-11T06:36:48Z","content_sha256":"search-result-present","record_id":"FOC_C9761A3AD839","required_evidence_present":true,"url":"https://www.linkedin.com/in/sachabest"}
 {"checked_at":"2026-11-03T19:34:37Z","content_sha256":"search-result-present","record_id":"FOC_AFBF33D308BD","required_evidence_present":true,"url":"https://www.linkedin.com/in/saira-malik-b65116109"}
@@ -738,7 +739,7 @@
 {"checked_at":"2026-08-30T16:45:58Z","content_sha256":"5491a849507efd99494043debf8d7d5320f63cba20b5c2c127958ef106b68286","record_id":"FOC_3E103F66C09B","required_evidence_present":false,"url":"https://www.odgers.com/en-us/expertise/services/leadership-advisory/board-engagement/"}
 {"checked_at":"2026-10-22T17:19:08Z","content_sha256":"2ed29cad3c1e48d4634bae6216371856726827c5d1a79c633f89e55cd6fad7bc","record_id":"FOC_D4F0BC3568ED","required_evidence_present":true,"url":"https://www.psp.eu/de"}
 {"checked_at":"2026-11-15T19:02:09Z","content_sha256":"4823475d94dea1ab6141f775f8bcf73506ceebf3cfcf25cc1408d1b81bcd493e","record_id":"FOC_FC415A7C0171","required_evidence_present":true,"url":"https://www.pwc.com/ca/en/about-us/alumni.html"}
-{"checked_at":"2026-10-11T17:45:29Z","content_sha256":"cc6b8b215e93b36b4dc083b952feeb33da16a4d1a081ac9811dc583a6e7d2efe","record_id":"FOC_C30ECE99804F","required_evidence_present":false,"url":"https://www.pwc.com/ca/en/about-us/diversity-inclusion/truth-reconciliation.html"}
+{"checked_at":"2026-11-16T06:47:45Z","content_sha256":"fa20086669e113e3a281d5320a5f0f96306f3474504acb3aa8fb111e20498f51","record_id":"FOC_53B136E6CD41","required_evidence_present":false,"url":"https://www.pwc.com/ca/en/about-us/diversity-inclusion/truth-reconciliation.html"}
 {"checked_at":"2026-11-15T19:02:11Z","content_sha256":"60bde654677850f2f6e280a9a0723802eaf3eb099e40cdfa47752c0b84758673","record_id":"FOC_48A40507595D","required_evidence_present":false,"url":"https://www.pwc.com/ca/en/about-us/our-organization/executive-team.html"}
 {"checked_at":"2026-11-15T19:02:08Z","content_sha256":"d61a7e83af807fa4af27619a7d07adaadead70278c24e3b71175fd4664d9e3c2","record_id":"FOC_804A70682159","required_evidence_present":false,"url":"https://www.pwc.com/ca/en/private-company/family-enterprise-services/family-office-services.html"}
 {"checked_at":"2026-11-04T06:35:57Z","content_sha256":"24d6ee4ec153617048686c5e5fd677f31ea691cd5c92e11306cd9d0ab4b80ad0","record_id":"FOC_73469FA30B9E","required_evidence_present":false,"url":"https://www.pwc.com/gx/en/industries/financial-services/asset-management.html"}
